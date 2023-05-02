@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1090135174394-s3uiivmc3e1c121p36mab6va11uvsnhi.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1090135174394-s3uiivmc3e1c121p36mab6va11uvsnhi</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBf7uT-Z2TUuE45H7mOUAAoTvyvgWiz8Vc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1090135174394</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.kimsnow33.travelapp</string>
+	<key>PROJECT_ID</key>
+	<string>travelapp12-2eddc</string>
+	<key>STORAGE_BUCKET</key>
+	<string>travelapp12-2eddc.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1090135174394:ios:4dcb63824cabdf738ead43</string>
+</dict>
+</plist>

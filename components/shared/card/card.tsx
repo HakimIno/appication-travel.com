@@ -1,17 +1,23 @@
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { COLORS } from "../../../constants";
 
 interface Props {
   children: any;
   style: any;
-  onPress: () => void;
+  onPress?: () => void;
 }
 
 const Card = ({ children, style, onPress }: Props) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[styles.card, style, { elevation: 1 }]}
+      style={[styles.card, style, { elevation: 0.5, marginBottom: 10 }]}
     >
       <View style={styles.inner}>{children}</View>
     </TouchableOpacity>
@@ -31,4 +37,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Card
+export default Card;

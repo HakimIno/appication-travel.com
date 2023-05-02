@@ -321,7 +321,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kimsnow33.travelapp";
-				PRODUCT_NAME = "travelapp";
+				PRODUCT_NAME = travelapp;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -347,7 +347,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kimsnow33.travelapp";
-				PRODUCT_NAME = "travelapp";
+				PRODUCT_NAME = travelapp;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				TARGETED_DEVICE_FAMILY = "1,2";

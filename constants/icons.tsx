@@ -9,17 +9,23 @@ const settings = require("../assets/icons/icons8-user-64.png");
 const star = require("../assets/icons/star.png");
 const transaction = require("../assets/icons/transaction.png");
 const message = require("../assets/icons/icons8-message-64.png");
+const hotelIcon = require("../assets/icons/hotel.png");
+const hotel = require("../assets/icons/icons8-downtown-64.png");
+const tripsIcon = require("../assets/icons/icons8-carry-on-bag-96.png");
 
 export default {
-    back_arrow,
-    home,
-    bookmark,
-    notification_color,
-    notification_white,
-    trending,
-    right_arrow,
-    settings,
-    star,
-    transaction,
-    message
-}
+  back_arrow,
+  home,
+  bookmark,
+  notification_color,
+  notification_white,
+  trending,
+  right_arrow,
+  settings,
+  star,
+  transaction,
+  message,
+  hotelIcon,
+  hotel,
+  tripsIcon
+};

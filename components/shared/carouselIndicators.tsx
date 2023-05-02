@@ -47,6 +47,8 @@ const CarouselIndicators = ({
     [dotSize, dotSpacing, slideWidth, slides]
   );
 
+ 
+
   return (
     <View style={styles.container}>
       {slides.map((_, index) => {
@@ -97,17 +99,16 @@ const styles = StyleSheet.create({
       paddingHorizontal: 2,
       paddingVertical: 4,
       borderRadius: 10,
-      opacity: 0.6
+      opacity: 0.8
     },
     dot: {
       backgroundColor: COLORS.white,
-      opacity: 0.8,
+      opacity: 1,
       borderRadius: 12,
-      
     },
     indicator: {
       position: 'absolute',
-      backgroundColor: COLORS.white,
+      backgroundColor: COLORS.primary,
       borderRadius: 10,
       opacity: 1,
       top: 4,

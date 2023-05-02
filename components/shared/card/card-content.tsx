@@ -4,7 +4,7 @@ import { SPACING } from "../../../constants/theme";
 
 interface Props {
   children: any;
-  style: any;
+  style?: any;
 }
 
 const CardContent = ({ children, style }: Props) => {

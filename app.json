@@ -15,6 +15,7 @@
       "**/*"
     ],
     "ios": {
+      "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true,
       "infoPlist": {
         "SKAdNetworkItems": [
@@ -29,17 +30,27 @@
       "bundleIdentifier": "com.kimsnow33.travelapp"
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
+      "useNextNotificationsApi": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
-        "android.permission.INTERNET"
+        "android.permission.INTERNET",
+        "android.permission.NOTIFICATIONS"
       ],
       "package": "com.kimsnow33.travelapp"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "config": {
+        "firebase": {
+          "projectId": "travelapp12-2eddc",
+          "apiKey": "AIzaSyDVE8vqdxMruFlgvN0JtOv1c6qaohw0v90",
+          "measurementId": "G-J77T34T9PX"
+        }
+      }
     },
     "extra": {
       "eas": {
@@ -47,9 +58,14 @@
       }
     },
     "runtimeVersion": "1.0.0",
-    "scheme": [
-      "travel-app",
-      "fb808694957342165"
+    "updates": {
+      "url": "https://u.expo.dev/604316e9-8604-49a9-b586-db69e961e07a"
+    },
+    "owner": "kimsnow33",
+    "plugins": [
+      [
+        "expo-notifications"
+      ]
     ]
   }
 }

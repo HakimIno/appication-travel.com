@@ -1,4 +1,3 @@
-
 import { Image, StyleSheet, View } from "react-native";
 
 interface Props {
@@ -7,9 +6,15 @@ interface Props {
 }
 
 const CardMedia = ({ source, borderBottomRadius = false }: Props) => {
+  
   return (
     <View
-      style={[styles.media, borderBottomRadius && styles.borderBottomRadius]}
+      style={[
+        styles.media,
+        borderBottomRadius
+          ? styles.borderBottomRadius
+          : null,
+      ]}
     >
       <Image
         style={styles.image}
@@ -17,7 +22,6 @@ const CardMedia = ({ source, borderBottomRadius = false }: Props) => {
           uri: source,
         }}
       />
-      
     </View>
   );
 };

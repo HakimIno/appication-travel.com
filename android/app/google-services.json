@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1090135174394",
+    "project_id": "travelapp12-2eddc",
+    "storage_bucket": "travelapp12-2eddc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090135174394:android:f03c239ecd9bc1e68ead43",
+        "android_client_info": {
+          "package_name": "com.kimsnow33.travelapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1090135174394-466q5rrjdabf0f2ifirj6iq5l36985jd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2Cej4MMa0fsr7ul-e4PMkuod-7GwSOew"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1090135174394-466q5rrjdabf0f2ifirj6iq5l36985jd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

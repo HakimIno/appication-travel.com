@@ -5,5 +5,5 @@
   <string name="facebook_client_token">33eb981e19a83e12a33302b7125c96f9</string>
   <string name="fb_login_protocol_scheme">fb808694957342165</string>
   <string name="expo_system_ui_user_interface_style" translatable="false">light</string>
-  <string name="facebook_app_id">808694957342165</string>
+  <string name="expo_runtime_version">1.0.0</string>
 </resources>

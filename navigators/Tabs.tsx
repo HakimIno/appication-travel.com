@@ -1,12 +1,22 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Animated,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React from "react";
 import {
   createBottomTabNavigator,
   BottomTabBar,
 } from "@react-navigation/bottom-tabs";
 
-import { CryptoDetail, Home, Transaction } from "../screens";
-import { COLORS, FONTS, icons } from "../constants";
+import { Home, Transaction } from "../screens";
+import { COLORS, FONTS, SIZES, icons } from "../constants";
+import SearchScreen from "../screens/search-screen";
+import { Ionicons } from "@expo/vector-icons";
+import SettingsScreen from "../screens/accouct-screen";
 
 const Tab = createBottomTabNavigator();
 
@@ -27,9 +37,10 @@ const Tabs = () => {
           height: 65,
         },
       }}
+      initialRouteName="Home"
     >
       <Tab.Screen
-        name="HomeS"
+        name="Home"
         component={Home}
         options={{
           tabBarIcon: ({ focused }) => (
@@ -72,39 +83,35 @@ const Tabs = () => {
                   color: focused ? COLORS.primary : COLORS.lightGray1,
                   fontSize: 9,
                   fontWeight: "700",
-                  fontFamily: 'SF-font'
+                  fontFamily: "SF-font",
                 }}
               >
-                Home
+                หน้าแรก
               </Text>
             </View>
           ),
         }}
       />
       <Tab.Screen
-        name="CryptoDetail"
-        component={CryptoDetail}
+        name="Search"
+        component={SearchScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={{ alignItems: "center", justifyContent: "center" }}>
-              <Image
-                source={icons.trending}
-                resizeMode="contain"
-                style={{
-                  width: 28,
-                  height: 28,
-                  tintColor: focused ? COLORS.primary : COLORS.lightGray1,
-                }}
+              <Ionicons
+                name="search"
+                size={28}
+                color={focused ? COLORS.primary : COLORS.lightGray1}
               />
               <Text
                 style={{
                   color: focused ? COLORS.primary : COLORS.lightGray1,
                   fontSize: 9,
                   fontWeight: "700",
-                  fontFamily: 'SF-font'
+                  fontFamily: "SF-font",
                 }}
               >
-                Hot
+                ค้นหา
               </Text>
             </View>
           ),
@@ -154,10 +161,10 @@ const Tabs = () => {
                   color: focused ? COLORS.primary : COLORS.lightGray1,
                   fontSize: 9,
                   fontWeight: "700",
-                  fontFamily: 'SF-font'
+                  fontFamily: "SF-font",
                 }}
               >
-                Bookmark
+                รายการโปรด
               </Text>
             </View>
           ),
@@ -165,7 +172,7 @@ const Tabs = () => {
       />
       <Tab.Screen
         name="Settings"
-        component={Home}
+        component={SettingsScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={{ alignItems: "center", justifyContent: "center" }}>
@@ -183,10 +190,10 @@ const Tabs = () => {
                   color: focused ? COLORS.primary : COLORS.lightGray1,
                   fontSize: 9,
                   fontWeight: "700",
-                  fontFamily: 'SF-font'
+                  fontFamily: "SF-font",
                 }}
               >
-                Profile
+                บัญชี
               </Text>
             </View>
           ),
@@ -209,5 +216,14 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
 
     elevation: 5,
+  },
+  indicator: {
+    position: "absolute",
+    width: 10,
+    height: 2,
+    left: SIZES.width / 3 / 2 - 5,
+    bottom: 30,
+    backgroundColor: COLORS.primary,
+    zIndex: 100,
   },
 });

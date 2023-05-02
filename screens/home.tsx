@@ -1,68 +1,62 @@
 import {
   ImageBackground,
   StyleSheet,
-  Text,
   View,
-  Platform,
-  FlatList,
   StatusBar,
-  SafeAreaView,
   ScrollView,
-  ViewStyle,
-  ImageStyle,
-  Dimensions,
-  RefreshControl,
   Animated,
   TouchableOpacity,
+  Platform,
+  AppState,
+  Alert,
 } from "react-native";
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo, useContext } from "react";
 import { Feather } from "@expo/vector-icons";
 import { COLORS, FONTS, icons, images } from "../constants";
-import { Image } from "react-native";
-import CategoryCard from "../components/home/CategoryCard";
-import TopHeader from "../components/home/TopHeader";
-import { AntDesign } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
+
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
-import { BlurView } from "expo-blur";
-import { useWindowDimensions } from "react-native";
+
 import Display from "../utils/Display";
-import LottieView from "lottie-react-native";
+
 import { AnimatedText } from "../components/home/AnimatedText";
 import { sample } from "lodash";
-import TopTabs from "../components/home/TopTabs";
+
 import MainHeader from "../components/home/main-header";
 import { SPACING } from "../constants/theme";
 import TopPlacesCarousel from "../components/home/top-places-carousel";
-import { TOP_PLACES } from "../constants/dummy";
+import { HOTELS, TOP_PLACES } from "../constants/dummy";
 import CategoryHeader from "../components/home/category-header";
 import SectionHeader from "../components/shared/section-header";
 import TripsList from "../components/home/trips-list";
 import { PLACES } from "../constants/dummy";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types";
+import { useNavigation } from "@react-navigation/native";
+import firebase, { getApp } from "firebase/app";
+import "firebase/messaging";
+import "firebase/functions";
+import "firebase/auth";
+import "firebase/firestore";
+import { NotificationContext } from "../config/noty";
+import * as Notifications from "expo-notifications";
 
 type CurrentScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
-  "CryptoDetail"
+  "Home"
 >;
 
-type Props = {
-  navigation: CurrentScreenNavigationProp;
-};
-
-const Home = ({ navigation }: Props) => {
-  const insets = useSafeAreaInsets();
-  const AnimatedFeather = Animated.createAnimatedComponent(Feather);
-
-  const scrollY = useRef(new Animated.Value(0)).current;
+const Home = () => {
+  const navigation = useNavigation<CurrentScreenNavigationProp>();
+  const { registerForPushNotifications } = useContext(NotificationContext);
 
   const [text, setText] = useState("Hi,kimsnow");
 
-  const [offsetY, setOffsetY] = useState<number>(0);
+  useEffect(() => {
+    registerForPushNotifications();
+  }, []);
 
   const message = [
     "สวัสวดีค่ะ ,“คุณอูฐ”",
@@ -100,24 +94,30 @@ const Home = ({ navigation }: Props) => {
           <MainHeader />
           <AnimatedText text={text} style={styles.animateTextStyle} />
         </ImageBackground>
+
         <CategoryHeader />
 
         <SectionHeader
           title="ทัวร์แนะนำ"
           buttonTitle="ดูทั้งหมด"
-          onPress={() => {}}
+          onPress={() => {
+            navigation.navigate("AllTrips", { type: "ทัวร์แนะนำ" });
+          }}
         />
-        <TopPlacesCarousel list={TOP_PLACES} />
 
+        <TopPlacesCarousel list={TOP_PLACES} navigation={navigation} />
         <SectionHeader
           title="ทัวร์ทั่วโลก"
           buttonTitle="ดูทั้งหมด"
-          onPress={() => {}}
+          onPress={() => {
+            navigation.navigate("AllTrips", { type: "ทัวร์ทั้งหมด" });
+          }}
         />
 
         {/* <TripsList list={PLACES} navigation={navigation} /> */}
         <TripsList list={PLACES} navigation={navigation} />
-        <TopPlacesCarousel list={TOP_PLACES} />
+
+        <View style={{ marginVertical: Display.setHeight(10) }} />
       </ScrollView>
     </View>
   );

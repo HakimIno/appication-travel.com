@@ -1,6 +1,6 @@
 {
   "cli": {
-    "version": ">= 3.9.0"
+    "version": ">= 3.10.2"
   },
   "build": {
     "development": {
@@ -9,21 +9,13 @@
         "gradleCommand": ":app:assembleDebug"
       },
       "ios": {
-        "buildConfiguration": "Debug",
-        "resourceClass": "m-medium"
+        "buildConfiguration": "Debug"
       }
     },
     "preview": {
-      "distribution": "internal",
-      "ios": {
-        "resourceClass": "m-medium"
-      }
+      "distribution": "internal"
     },
-    "production": {
-      "ios": {
-        "resourceClass": "m-medium"
-      }
-    }
+    "production": {}
   },
   "submit": {
     "production": {}

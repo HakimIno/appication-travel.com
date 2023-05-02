@@ -15,8 +15,8 @@ import { A } from "@expo/html-elements";
 import * as AuthSession from "expo-auth-session";
 import * as Facebook from "expo-facebook";
 import * as WebBrowser from "expo-web-browser";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { LinearGradient } from "expo-linear-gradient";
 import {
   getAuth,
   signInWithCredential,
@@ -24,11 +24,11 @@ import {
   onAuthStateChanged,
 } from "@firebase/auth";
 
-import { LoginManager, AccessToken, Settings } from "react-native-fbsdk-next";
 import app from "../config/config";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
+import { SPACING } from "../constants/theme";
 
 type Props = {
   navigation: any;
@@ -42,8 +42,11 @@ export const LoginScreen = ({ navigation }: Props) => {
   useEffect(() => {
     const auth = getAuth(app);
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        navigation.replace("Home");
+      if (user) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Root" }],
+        });
       }
     });
     return unsubscribe;
@@ -76,16 +79,10 @@ export const LoginScreen = ({ navigation }: Props) => {
   };
 
   return (
-    <LinearGradient colors={["#2b83f7", COLORS.primary]} style={{ flex: 1 }}>
-      <View style={styles.headerClose}>
-        <Ionicons name="close" size={27} color={COLORS.white} />
-      </View>
+    <View style={{ flex: 1, backgroundColor: COLORS.white }}>
+      <View style={styles.headerClose}></View>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>
-          Travel
-          <Text style={{ color: COLORS.yellow, fontSize: SIZES.h1 }}>.</Text>
-          com
-        </Text>
+        <Image source={images.LogoApp} style={{ width: 250, height: 150 }} />
         <Text style={styles.headerSubtitleTitle}>
           เข้าสู่ระบบเพื่อจองแพ็คเกจทัวร์
         </Text>
@@ -129,8 +126,8 @@ export const LoginScreen = ({ navigation }: Props) => {
               style={{
                 width: 40,
                 textAlign: "center",
-                color: COLORS.white,
-                fontWeight: "bold",
+                color: COLORS.black,
+                fontFamily: "SukhumvitSet-Bold",
               }}
             >
               หรือ
@@ -141,14 +138,22 @@ export const LoginScreen = ({ navigation }: Props) => {
           </View>
           <View style={{ marginVertical: 15 }} />
           {/* register  */}
-          <View style={[styles.registerContainer, styles.shadowProp]}>
-            <Text style={styles.facebookText}>ลงทะเบียน</Text>
-          </View>
+          <TouchableOpacity
+            style={[styles.registerContainer, styles.shadowProp]}
+            onPress={() => navigation.navigate("EmailLogin")}
+          >
+            <MaterialCommunityIcons
+              name="gmail"
+              size={24}
+              color={COLORS.white}
+            />
+            <Text style={styles.facebookText}>เข้าระบบ Email</Text>
+          </TouchableOpacity>
         </View>
       </View>
       <View
         style={{
-          marginVertical: Display.setHeight(28),
+          marginVertical: SPACING.l * 8,
           alignItems: "center",
           marginHorizontal: Display.setWidth(4),
         }}
@@ -164,7 +169,7 @@ export const LoginScreen = ({ navigation }: Props) => {
           ของTravel.com
         </Text>
       </View>
-    </LinearGradient>
+    </View>
   );
 };
 
@@ -174,7 +179,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
   },
   headerClose: {
-    marginVertical: Display.setHeight(5),
+    marginVertical: Display.setHeight(1),
     marginHorizontal: Display.setWidth(3),
   },
   headerContainer: {
@@ -182,12 +187,12 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: SIZES.body2,
-    color: COLORS.white,
-    fontWeight: "bold",
+    color: COLORS.black,
   },
   headerSubtitleTitle: {
     fontSize: SIZES.h4 - 2,
-    color: COLORS.white,
+    color: COLORS.slate,
+    fontFamily: "SukhumvitSet-SemiBold",
   },
   loginContainer: {
     marginVertical: Display.setHeight(8),
@@ -196,36 +201,38 @@ const styles = StyleSheet.create({
   googleContainer: {
     backgroundColor: COLORS.white,
     paddingHorizontal: Display.setWidth(22),
-    paddingVertical: Display.setHeight(0.8),
-    borderRadius: SIZES.radius - 8,
+    paddingVertical: Display.setHeight(1),
+    borderRadius: SIZES.radius + 5,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    borderWidth: 0.5,
+    borderColor: COLORS.slate,
   },
   googleText: {
     fontSize: SIZES.h4 - 1,
-    fontWeight: "bold",
+    fontFamily: "SukhumvitSet-Bold",
     marginLeft: Display.setWidth(2),
   },
   facebookContainer: {
     backgroundColor: COLORS.facebook,
     paddingHorizontal: Display.setWidth(22),
-    paddingVertical: Display.setHeight(0.8),
-    borderRadius: SIZES.radius - 8,
+    paddingVertical: Display.setHeight(1),
+    borderRadius: SIZES.radius + 5,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
   },
   facebookText: {
     fontSize: SIZES.h4 - 1,
-    fontWeight: "bold",
+    fontFamily: "SukhumvitSet-Bold",
     marginLeft: Display.setWidth(2),
     color: COLORS.white,
   },
   phoneContainer: {
     backgroundColor: "#34d399",
     paddingVertical: Display.setHeight(1),
-    borderRadius: SIZES.radius - 8,
+    borderRadius: SIZES.radius + 5,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -239,16 +246,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   registerContainer: {
-    backgroundColor: "#2b83f7",
-    paddingVertical: Display.setHeight(1.2),
-    borderRadius: SIZES.radius - 8,
+    backgroundColor: COLORS.red,
+    paddingVertical: Display.setHeight(1),
+    borderRadius: SIZES.radius + 5,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
   },
   textAgreement: {
     fontSize: SIZES.h4 - 4,
-    color: COLORS.white,
+    color: COLORS.black,
     textAlign: "center",
   },
 });

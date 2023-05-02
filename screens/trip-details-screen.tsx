@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { SIZES } from "../constants";
 import { COLORS, SPACING } from "../constants/theme";
 import * as Animatable from "react-native-animatable";
@@ -7,39 +7,46 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import TripDetailsCard from "../components/trip-details/TripDetailsCard/trip-details-card";
 import TripDetailsCarousel from "../components/trip-details/ trip-details-carousel";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "../types";
+import FavoriteButton from "../components/shared/favorite-button";
 
 type Props = {
   route: any;
-  navigation: any;
 };
 
-const TripDetailsScreen = ({ route, navigation }: Props) => {
+type TripDetailsScreenNavigationProp = NavigationProp<
+  RootStackParamList,
+  "TripDetails"
+>;
+
+const TripDetailsScreen = ({ route }: Props) => {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<TripDetailsScreenNavigationProp>();
   const { trip } = route.params;
   const slides = [trip.image, ...trip.gallery];
   return (
     <View style={styles.container}>
       <Animatable.View
-        style={[styles.backButton, { marginTop: insets.top }]}
+        style={[styles.backButton, { marginTop: insets.top + 15 }]}
+      >
+        <Ionicons
+          name="ios-arrow-back"
+          onPress={navigation.goBack}
+          style={[styles.backIcon]}
+          size={26}
+        />
+      </Animatable.View>
+      <Animatable.View
+        style={[styles.favoriteButton, { marginTop: insets.top + 15 }]}
         animation="fadeIn"
         delay={500}
         duration={400}
         easing="ease-in-out"
       >
-        <Ionicons
-          name="ios-arrow-back"
-          onPress={navigation.goBack}
-          style={[styles.backIcon, { marginTop: insets.top - 15 }]}
-          size={26}
-        />
+        <FavoriteButton onPress={() => {}} />
       </Animatable.View>
-      <Animatable.View
-        style={[styles.favoriteButton, { marginTop: insets.top }]}
-        animation="fadeIn"
-        delay={500}
-        duration={400}
-        easing="ease-in-out"
-      ></Animatable.View>
+
       <TripDetailsCarousel slides={slides} id={trip.id} />
       <TripDetailsCard trip={trip} />
     </View>
@@ -52,6 +59,9 @@ TripDetailsScreen.sharedElements = (route: any) => {
     {
       id: `trip.${trip.id}.image`,
     },
+    {
+      id: `trip.${trip.id}.location`,
+    },
   ];
 };
 
@@ -59,15 +69,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  imageBox: {
-    borderRadius: 10,
-    overflow: "hidden",
-  },
-  image: {
-    width: SIZES.width,
-    height: SIZES.height,
-    resizeMode: "cover",
-  },
+
   backButton: {
     position: "absolute",
     left: SPACING.l,

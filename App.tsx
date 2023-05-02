@@ -1,8 +1,10 @@
-import { CryptoDetail, Transaction } from "./screens";
-import { StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 
 import { useFonts } from "expo-font";
 import Navigators from "./navigators";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { NotificationProvider } from "./config/noty";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -16,7 +18,15 @@ export default function App() {
     return null;
   }
 
-  return <Navigators />;
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <BottomSheetModalProvider>
+        <NotificationProvider>
+          <Navigators />
+        </NotificationProvider>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
+  );
 }
 
 const styles = StyleSheet.create({

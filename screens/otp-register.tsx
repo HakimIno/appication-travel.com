@@ -25,7 +25,10 @@ import { COLORS, SIZES } from "../constants";
 import { LinearGradient } from "expo-linear-gradient";
 import Display from "../utils/Display";
 import { StackNavigationProp } from "@react-navigation/stack";
-import {RootStackParamList} from "../types";
+import { RootStackParamList } from "../types";
+import { MaterialIcons } from "@expo/vector-icons";
+import { SPACING } from "../constants/theme";
+import { HeaderBack } from "../components/shared/headerBack";
 
 type CurrentScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -37,7 +40,6 @@ type Props = {
 };
 
 const OtpRegister = ({ navigation }: Props) => {
-  let textInput = useRef(null);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [verificationId, setVerificationId] = useState("");
 
@@ -63,7 +65,7 @@ const OtpRegister = ({ navigation }: Props) => {
       );
       setVerificationId(verificationId);
       if (phoneNumber) {
-        navigation.replace("InputOTP", {
+        navigation.navigate("InputOTP", {
           phoneNumber: phoneNumber,
           verificationId: verificationId,
         });
@@ -83,15 +85,9 @@ const OtpRegister = ({ navigation }: Props) => {
   };
 
   return (
-    <LinearGradient
-      colors={["#2b83f7", COLORS.primary]}
-      style={styles.container}
-    >
-      <KeyboardAvoidingView
-        keyboardVerticalOffset={50}
-        behavior={"padding"}
-        style={styles.containerAvoiddingView}
-      >
+    <View style={styles.container}>
+      <HeaderBack onPress={() => navigation.goBack()} />
+      <KeyboardAvoidingView style={styles.containerAvoiddingView}>
         <Text style={styles.textTitle}>
           {"โปรดป้อนหมายเลขโทรศัพท์มือถือของคุณ"}
         </Text>
@@ -134,13 +130,14 @@ const OtpRegister = ({ navigation }: Props) => {
           />
         </View>
       </KeyboardAvoidingView>
-    </LinearGradient>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.white,
   },
   containerAvoiddingView: {
     flex: 1,
@@ -151,16 +148,18 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: Display.setHeight(10),
     marginBottom: 15,
-    color: COLORS.white,
+    color: COLORS.slate,
     fontFamily: "SukhumvitSet-Medium",
   },
   containerInput: {
     flexDirection: "row",
     marginHorizontal: 15,
     paddingHorizontal: 12,
-    borderRadius: SIZES.radius - 8,
+    borderRadius: SIZES.radius + 5,
     backgroundColor: "white",
     alignItems: "center",
+    borderWidth: 0.5,
+    borderColor: COLORS.slate,
   },
   openDialogView: {
     flexDirection: "row",
@@ -181,7 +180,7 @@ const styles = StyleSheet.create({
   btnContinue: {
     paddingVertical: Display.setHeight(1.3),
     paddingHorizontal: Display.setWidth(37),
-    borderRadius: SIZES.radius + 10,
+    borderRadius: SIZES.radius + 5,
     flexDirection: "row",
     justifyContent: "center",
 

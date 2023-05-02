@@ -32,7 +32,7 @@ const TripsList = ({ list, navigation }: Props) => {
             }}
           >
             <SharedElement id={`trip.${item.id}.image`} style={styles.media}>
-              <CardMedia source={item.image} />
+              <CardMedia source={item.image}  />
             </SharedElement>
             <CardContent style={styles.content}>
               <View style={styles.titleBox}>

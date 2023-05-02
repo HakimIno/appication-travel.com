@@ -6,79 +6,70 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Display from "../../utils/Display";
-import { COLORS, SHADOW, SPACING } from "../../constants/theme";
+import { COLORS, SHADOW, SIZES, SPACING } from "../../constants/theme";
 import { View } from "react-native";
 import { Octicons } from "@expo/vector-icons";
+import Carousel from "../shared/carousel";
+
+import CardMedia from "../shared/card/card-media";
+import Card from "../shared/card/card";
+
+import { useRef } from "react";
+import { SharedElement } from "react-navigation-shared-element";
 
 interface Props {
   list: any;
+  navigation: any;
 }
 
-const CARD_WIDTH = Display.setWidth(100) - 80;
+const CARD_WIDTH = SIZES.width - 80;
 const CARD_HEIGHT = 200;
 const CARD_WIDTH_SPACING = CARD_WIDTH + SPACING.l;
 
-const TopPlacesCarousel = ({ list }: Props) => {
+const TopPlacesCarousel = ({ list, navigation }: Props) => {
   return (
-    <FlatList
-      data={list}
-      horizontal
-      snapToInterval={CARD_WIDTH_SPACING}
-      decelerationRate="fast"
-      showsHorizontalScrollIndicator={false}
-      keyExtractor={(i) => i.id}
-      renderItem={({ item, index }) => {
+    <Carousel
+      items={list}
+      renderItem={({ item, style, index }: any) => {
         return (
-          <TouchableOpacity
-            style={{
-              marginLeft: SPACING.l,
-              marginRight: index === list.length - 1 ? SPACING.l : 0,
+          <Card
+            style={[styles.card, style]}
+            onPress={() => {
+              navigation.navigate("TripDetails", { trip: item });
             }}
           >
-            <View style={[styles.card, SHADOW.dark]}>
-              <Octicons name="heart" size={22} color="white" style={styles.favorite} />
-              <View style={styles.imageBox}>
-                <Image
-                  source={{
-                    uri: item.image,
-                  }}
-                  style={styles.image}
-                />
-              </View>
-              <View style={styles.titleBox}>
-                <Text style={styles.title}>{item.title}</Text>
-                <Text style={styles.location}>{item.location}</Text>
-              </View>
+            <SharedElement
+              id={`trip.${item.id}.image`}
+              style={StyleSheet.absoluteFillObject}
+            >
+              <CardMedia source={item.image} borderBottomRadius />
+            </SharedElement>
+            <View style={styles.titleBox}>
+              <Text style={styles.title}>{item.title}</Text>
+              <Text style={styles.location}>{item.location}</Text>
             </View>
-          </TouchableOpacity>
+          </Card>
         );
       }}
     />
   );
 };
 
+TopPlacesCarousel.sharedElements = (route: any) => {
+  const { trip } = route.params;
+  return [
+    {
+      id: `trip.${trip.id}.image`,
+    },
+    {
+      id: `trip.${trip.id}.location`,
+    },
+  ];
+};
+
 const styles = StyleSheet.create({
   card: {
-    width: CARD_WIDTH,
     height: CARD_HEIGHT,
-    marginVertical: 10,
-  },
-  favorite: {
-    position: "absolute",
-    top: SPACING.m,
-    right: SPACING.m,
-    zIndex: 1,
-  },
-  imageBox: {
-    width: CARD_WIDTH,
-    height: CARD_HEIGHT,
-    borderRadius: 10,
-    overflow: "hidden",
-  },
-  image: {
-    width: CARD_WIDTH,
-    height: CARD_HEIGHT,
-    resizeMode: "cover",
   },
   titleBox: {
     position: "absolute",
@@ -86,13 +77,14 @@ const styles = StyleSheet.create({
     left: 16,
   },
   title: {
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: 14,
+    fontFamily: "SukhumvitSet-SemiBold",
     color: COLORS.white,
   },
   location: {
-    fontSize: 18,
+    fontSize: 13,
     color: COLORS.white,
+    fontFamily: "SukhumvitSet-SemiBold",
   },
 });
 

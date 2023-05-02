@@ -50,7 +50,10 @@ const InputVerificationScreen: React.FC<Props> = ({ route, navigation }) => {
       setIsLoading(false);
 
       if (user) {
-        navigation.replace("Home");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Root" }],
+        });
       }
     });
     return unsubscribe;
@@ -84,10 +87,7 @@ const InputVerificationScreen: React.FC<Props> = ({ route, navigation }) => {
   }, []);
 
   return (
-    <LinearGradient
-      colors={["#2b83f7", COLORS.primary]}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <KeyboardAvoidingView
         keyboardVerticalOffset={50}
         behavior={"height"}
@@ -136,7 +136,7 @@ const InputVerificationScreen: React.FC<Props> = ({ route, navigation }) => {
 
         <Text
           style={{
-            color: "white",
+            color: COLORS.red,
             fontSize: 12,
             fontFamily: "SukhumvitSet-Medium",
             marginVertical: Display.setHeight(1),
@@ -145,18 +145,6 @@ const InputVerificationScreen: React.FC<Props> = ({ route, navigation }) => {
           {errorMessage}
         </Text>
 
-        {/* <View style={styles.bottomView}>
-          <TouchableOpacity>
-            <View style={styles.btnChangeNumber}>
-              <Text style={styles.textChange}>เปลี่ยนหมายเลข</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.btnResend}>
-              <Text style={styles.textResend}>ส่งรหัส OTP อีกครั้ง (24s)</Text>
-            </View>
-          </TouchableOpacity>
-        </View> */}
         <TouchableOpacity onPress={confirmCode}>
           <View
             style={[
@@ -170,13 +158,14 @@ const InputVerificationScreen: React.FC<Props> = ({ route, navigation }) => {
           </View>
         </TouchableOpacity>
       </KeyboardAvoidingView>
-    </LinearGradient>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.white,
   },
   containerAvoiddingView: {
     flex: 1,
@@ -185,8 +174,7 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     fontSize: 15,
-
-    color: COLORS.white,
+    color: COLORS.black,
     fontFamily: "SukhumvitSet-Medium",
   },
   containerInput: {
@@ -200,13 +188,13 @@ const styles = StyleSheet.create({
     margin: 5,
     justifyContent: "center",
     alignItems: "center",
-    borderBottomColor: COLORS.white,
+    borderBottomColor: COLORS.black,
     borderBottomWidth: 1.5,
   },
   cellText: {
     textAlign: "center",
     fontSize: 16,
-    color: COLORS.white,
+    color: COLORS.black,
   },
   textInput: {
     opacity: 0,
@@ -226,7 +214,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   textChange: {
-    color: "#fff",
+    color: COLORS.black,
     fontFamily: "SukhumvitSet-Medium",
     alignItems: "center",
     fontSize: SIZES.base + 4,
@@ -238,7 +226,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   textResend: {
-    color: "#fff",
+    color: COLORS.black,
     fontFamily: "SukhumvitSet-Medium",
     alignItems: "center",
     fontSize: SIZES.base + 4,

@@ -7,6 +7,7 @@ const bg = require("../assets/icons/bg-4k.jpeg");
 const refresh = require("../assets/images/pesawat.json");
 const googlePng = require("../assets/images/googleLogo.png")
 const bgLogin = require("../assets/images/pexels-photo-1078983.jpeg")
+const LogoApp = require("../assets/images/Logo.png")
 
 export default {
     banner,
@@ -17,5 +18,6 @@ export default {
     bg,
     refresh,
     googlePng,
-    bgLogin
+    bgLogin,
+    LogoApp
 }

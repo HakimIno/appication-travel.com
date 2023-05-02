@@ -11,7 +11,7 @@ interface Props {
 
 const TripDetailsCarousel = ({ slides, id }: Props) => {
   const scrollAnimated = useRef(new Animated.Value(0)).current;
- 
+
   return (
     <>
       <Animated.FlatList
@@ -65,7 +65,7 @@ const TripDetailsCarousel = ({ slides, id }: Props) => {
 const styles = StyleSheet.create({
   slide: {
     width: SIZES.width,
-    height: SIZES.height,
+    height: SIZES.height ,
   },
   image: {
     width: SIZES.width,
