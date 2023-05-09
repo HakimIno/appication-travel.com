@@ -17,8 +17,13 @@ import { COLORS, FONTS, SIZES, icons } from "../constants";
 import SearchScreen from "../screens/search-screen";
 import { Ionicons } from "@expo/vector-icons";
 import SettingsScreen from "../screens/accouct-screen";
+import { createStackNavigator } from "@react-navigation/stack";
+import { RootStackParamList } from "../types";
 
 const Tab = createBottomTabNavigator();
+
+
+
 
 const Tabs = () => {
   return (
@@ -112,59 +117,6 @@ const Tabs = () => {
                 }}
               >
                 ค้นหา
-              </Text>
-            </View>
-          ),
-        }}
-      />
-
-      <Tab.Screen
-        name="Transaction"
-        component={Transaction}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <View style={{ alignItems: "center", justifyContent: "center" }}>
-              {focused ? (
-                <View
-                  style={{
-                    width: 10,
-                    height: 3,
-                    borderRadius: 10,
-                    backgroundColor: "#ffc123",
-                    zIndex: 1,
-                    top: 8,
-                  }}
-                />
-              ) : (
-                <View
-                  style={{
-                    width: 10,
-                    height: 3,
-                    borderRadius: 10,
-                    backgroundColor: "#292929",
-                    zIndex: 1,
-                    top: 8,
-                  }}
-                />
-              )}
-              <Image
-                source={icons.bookmark}
-                resizeMode="contain"
-                style={{
-                  width: 26,
-                  height: 26,
-                  tintColor: focused ? COLORS.primary : COLORS.lightGray1,
-                }}
-              />
-              <Text
-                style={{
-                  color: focused ? COLORS.primary : COLORS.lightGray1,
-                  fontSize: 9,
-                  fontWeight: "700",
-                  fontFamily: "SF-font",
-                }}
-              >
-                รายการโปรด
               </Text>
             </View>
           ),

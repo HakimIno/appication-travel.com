@@ -35,7 +35,7 @@ type BookingTripsScreenNavigationProp = NavigationProp<
 const BookingTripScreen = () => {
   const navigation = useNavigation<BookingTripsScreenNavigationProp>();
   const route = useRoute<RouteProp<RootStackParamList, "BookingTrips">>();
-  const { title, price } = route.params;
+  const { title, price, tripsId } = route.params;
 
   const details = ["ยกเลิกฟรี (ล่วงหน้า 24 ชั่วโมง)", "ยืนยัน"];
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -248,6 +248,7 @@ const BookingTripScreen = () => {
             onPress={() => {
               if (adults !== 0 || (children !== 0 && activeIndex !== "")) {
                 navigation.navigate("BookingInformation", {
+                  tripsId: tripsId,
                   title: title,
                   price: prices,
                   adults: adults,

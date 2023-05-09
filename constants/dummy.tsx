@@ -72,7 +72,7 @@ export const HOTELS = {
     description: "",
     rating: 9.3,
     pricePeerDay: "230",
-    reviews: [REVIEWS[2],  REVIEWS[4], REVIEWS[5]],
+    reviews: [REVIEWS[2], REVIEWS[4], REVIEWS[5]],
   },
   3: {
     id: 3,
@@ -139,7 +139,7 @@ export const HOTELS = {
     description: "",
     rating: 9.4,
     pricePeerDay: "430",
-    reviews: [REVIEWS[2],  REVIEWS[5]],
+    reviews: [REVIEWS[2], REVIEWS[5]],
   },
   9: {
     id: 9,
@@ -173,7 +173,7 @@ export const HOTELS = {
     rating: 9.2,
     pricePeerDay: "230",
     reviews: [REVIEWS[2], REVIEWS[1], REVIEWS[3], REVIEWS[4], REVIEWS[5]],
-    
+
   },
   12: {
     id: 12,
@@ -184,7 +184,7 @@ export const HOTELS = {
     description: "",
     rating: 9.4,
     pricePeerDay: "120",
-    reviews: [REVIEWS[2], REVIEWS[1],  REVIEWS[4], REVIEWS[5]],
+    reviews: [REVIEWS[2], REVIEWS[1], REVIEWS[4], REVIEWS[5]],
   },
 
   13: {
@@ -196,7 +196,7 @@ export const HOTELS = {
     description: "",
     rating: 9.2,
     pricePeerDay: "740",
-    reviews: [ REVIEWS[3], REVIEWS[4], REVIEWS[5]],
+    reviews: [REVIEWS[3], REVIEWS[4], REVIEWS[5]],
   },
   14: {
     id: 14,
@@ -219,7 +219,7 @@ export const TOP_PLACES = [
     title: "Amalfi",
     location: "Italy",
     description:
-      "The ultimate Amalfi Coast travel guide, where to stay, where to eat, and what areas to visit in the Amalfi Coast of Italy. Positano, Ravello, Amalfi and more",
+      "",
     gallery: [
       "https://github.com/azdravchev/Travel-App/blob/home_screen/assets/images/eea622430834cb64b900c2f03e5be6b8.jpeg?raw=true",
       "https://github.com/azdravchev/Travel-App/blob/home_screen/assets/images/922a0cb274208ccd234f6c14f2174b8b.jpeg?raw=true",
@@ -396,6 +396,12 @@ export const PLACES = [
     type: "PLACE",
   },
 ];
+
+export const PROMOTION = [
+  { id: 1, image: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.2gees.com%2Fwp-content%2Fuploads%2F2018%2F07%2Fagoda_banner.jpg&f=1&nofb=1&ipt=3867dbe77a9400df072b5eea4f617189523bf823a22d018b4ed117154e951fbd&ipo=images" },
+  { id: 2, image: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.hashcorner.com%2Fwp-content%2Fuploads%2F2022%2F01%2FWelcomeback-agoda-asia.jpg&f=1&nofb=1&ipt=1bb24db4d061254821dea7623a233b6ac0ea9fb14b9aa1bfca686a236117052d&ipo=images" },
+
+]
 
 export const SEARCH_PLACES = [...PLACES, ...TOP_PLACES].map((item) => ({
   ...item,

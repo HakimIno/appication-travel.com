@@ -286,6 +286,7 @@ const TripDetailsCard = ({ trip }: Props) => {
           onPress={() =>
             navigation.navigate("BookingTrips", {
               title: trip.title,
+              tripsId: trip.tripsId,
               price: trip.price,
             })
           }

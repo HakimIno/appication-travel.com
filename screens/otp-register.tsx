@@ -9,25 +9,20 @@ import {
 } from "react-native";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
-import app from "../config/config";
+import { auth, firebaseConfig } from "../config/config";
 
-import { firebaseConfig } from "../config/config";
 
 import {
-  getAuth,
+
   PhoneAuthProvider,
-  signInWithPhoneNumber,
-  AuthCredential,
-  signInWithCredential,
-  RecaptchaVerifier,
+
 } from "@firebase/auth";
 import { COLORS, SIZES } from "../constants";
-import { LinearGradient } from "expo-linear-gradient";
+
 import Display from "../utils/Display";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types";
-import { MaterialIcons } from "@expo/vector-icons";
-import { SPACING } from "../constants/theme";
+
 import { HeaderBack } from "../components/shared/headerBack";
 
 type CurrentScreenNavigationProp = StackNavigationProp<
@@ -58,7 +53,7 @@ const OtpRegister = ({ navigation }: Props) => {
 
   const handleSendCode = async () => {
     try {
-      const phoneProvider = new PhoneAuthProvider(getAuth(app));
+      const phoneProvider = new PhoneAuthProvider(auth);
       const verificationId = await phoneProvider.verifyPhoneNumber(
         `+66${phoneNumber}`,
         recaptchaVerifier.current!

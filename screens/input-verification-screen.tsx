@@ -21,7 +21,7 @@ import {
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../types";
-import app from "../config/config";
+import { auth, db } from "../config/config";
 
 type InputProps = RouteProp<RootStackParamList, "InputOTP">;
 
@@ -45,11 +45,10 @@ const InputVerificationScreen: React.FC<Props> = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const auth = getAuth(app);
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsLoading(false);
 
-      if (user) {
+    const unsubscribe = auth.onAuthStateChanged((token) => {
+      setIsLoading(false);
+      if (token) {
         navigation.reset({
           index: 0,
           routes: [{ name: "Root" }],

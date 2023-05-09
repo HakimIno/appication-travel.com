@@ -1,6 +1,6 @@
-import { getAuth } from '@firebase/auth';
-import { initializeApp, getApps } from 'firebase/app';
-
+import { getApp, initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore, initializeFirestore } from "firebase/firestore";
 
 
 export const firebaseConfig = {
@@ -13,7 +13,11 @@ export const firebaseConfig = {
     measurementId: "G-J77T34T9PX"
 }
 
-const app = initializeApp(firebaseConfig)
-export const auth = getAuth(app)
 
-export default app;
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = initializeFirestore(app, { experimentalForceLongPolling: true});
+
+export { auth, db };

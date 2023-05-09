@@ -21,9 +21,9 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <BottomSheetModalProvider>
-        <NotificationProvider>
-          <Navigators />
-        </NotificationProvider>
+
+        <Navigators />
+
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );

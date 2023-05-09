@@ -15,7 +15,6 @@
       "**/*"
     ],
     "ios": {
-      "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true,
       "infoPlist": {
         "SKAdNetworkItems": [
@@ -31,26 +30,21 @@
     },
     "android": {
       "googleServicesFile": "./google-services.json",
-      "useNextNotificationsApi": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
         "android.permission.INTERNET",
-        "android.permission.NOTIFICATIONS"
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
       ],
       "package": "com.kimsnow33.travelapp"
     },
     "web": {
-      "favicon": "./assets/favicon.png",
-      "config": {
-        "firebase": {
-          "projectId": "travelapp12-2eddc",
-          "apiKey": "AIzaSyDVE8vqdxMruFlgvN0JtOv1c6qaohw0v90",
-          "measurementId": "G-J77T34T9PX"
-        }
-      }
+      "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
@@ -58,14 +52,21 @@
       }
     },
     "runtimeVersion": "1.0.0",
-    "updates": {
-      "url": "https://u.expo.dev/604316e9-8604-49a9-b586-db69e961e07a"
-    },
+    "scheme": [
+      "travel-app",
+      "fb808694957342165"
+    ],
     "owner": "kimsnow33",
     "plugins": [
       [
-        "expo-notifications"
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
       ]
-    ]
+    ],
+    "updates": {
+      "url": "https://u.expo.dev/604316e9-8604-49a9-b586-db69e961e07a"
+    }
   }
 }

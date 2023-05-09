@@ -22,6 +22,8 @@ import BookingInformationScreen from "../screens/booking-information-screen";
 import RegisterScreen from "../screens/register-screen";
 import HotelDetailsScreen from "../screens/hotel-details-screen";
 import AllTrips from "../screens/all-trips";
+import NotificationScreen from "../screens/notification-screen";
+import ReviewInputScreen from "../screens/review-input-screen";
 
 const Stack = createSharedElementStackNavigator<RootStackParamList>();
 
@@ -54,6 +56,27 @@ const Navigators = () => {
               gestureEnabled: false,
             } as StackNavigationOptions
           }
+        />
+        <Stack.Screen
+          name="Notification"
+          component={NotificationScreen}
+          options={{
+            headerShown: true,
+            title: "การแจ้งเตือน",
+            headerTitleStyle: {
+              fontSize: 15,
+              color: COLORS.black,
+              fontFamily: "SukhumvitSet-Bold",
+            },
+            headerBackImage: () => (
+              <Octicons
+                name="arrow-left"
+                size={24}
+                color={COLORS.black}
+                style={{ marginLeft: 10 }}
+              />
+            ),
+          }}
         />
         <Stack.Screen
           name="TripDetails"
@@ -167,8 +190,28 @@ const Navigators = () => {
             gestureDirection: "horizontal",
           }}
         />
+        <Stack.Screen
+          name="ReviewInput"
+          component={ReviewInputScreen}
+          options={{
+            headerShown: true,
+            title: "ให้คะแนนแพ็คเกจ",
+            headerTitleStyle: {
+              fontSize: 15,
+              color: COLORS.black,
+              fontFamily: "SukhumvitSet-Bold",
+            },
+            headerBackImage: () => (
+              <Octicons
+                name="arrow-left"
+                size={24}
+                color={COLORS.black}
+                style={{ marginLeft: 10 }}
+              />
+            ),
+          }}
+        />
 
-        <Stack.Screen name="Transaction" component={Transaction} />
       </Stack.Navigator>
     </NavigationContainer>
   );

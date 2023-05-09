@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { COLORS } from "../constants";
 import { Octicons, Ionicons } from "@expo/vector-icons";
 import { SIZES, SPACING } from "../constants/theme";
@@ -13,6 +13,8 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types";
 import { HeaderBack } from "../components/shared/headerBack";
+import { signInWithEmailAndPassword } from "@firebase/auth";
+import { auth } from "../config/config";
 
 type emailScreenProps = StackNavigationProp<RootStackParamList, "EmailLogin">;
 
@@ -26,23 +28,36 @@ const EmailLoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
-  const [isEmailValid, setIsEmailValid] = useState(true);
-  const [isPasswordValid, setIsPasswordValid] = useState(true);
+
 
   // handleLogin
   const handleLogin = () => {
-    const isEmailValid = emailRegex.test(email);
-    const isPasswordValid = passwordRegex.test(password);
-    setIsEmailValid(isEmailValid);
-    setIsPasswordValid(isPasswordValid);
+    signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
+      const user = userCredential.user;
+    })
   };
 
-  const messagePassword = [
-    "ต้องมีอักขระอย่างน้อย 8 ตัว",
-    "ต้องมีอย่างน้อยหนึ่งหลัก (0-9)",
-    "ต้องมีตัวอักษรพิมพ์เล็ก (a-z) อย่างน้อยหนึ่งตัว",
-    "ต้องมีอักษรตัวพิมพ์ใหญ่ (A-Z) อย่างน้อยหนึ่งตัว",
-  ];
+  useEffect(() => {
+    try {
+      const unsubscribe = auth.onAuthStateChanged((authUser) => {
+        if (authUser) {
+
+          navigation.reset({
+            index: 0,
+            routes: [{
+              name: "Root"
+            }],
+          });
+        }
+      });
+
+      return unsubscribe;
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
+
 
   return (
     <View style={styles.container}>
@@ -70,11 +85,7 @@ const EmailLoginScreen = () => {
             />
           )}
         </View>
-        <View style={{ marginTop: 10 }}>
-          {!isEmailValid && (
-            <Text style={styles.invalidText}>อีเมลนี้ไม่ถูกต้อง</Text>
-          )}
-        </View>
+
         <View
           style={[
             styles.containerInput,
@@ -104,15 +115,7 @@ const EmailLoginScreen = () => {
             onPress={() => setShowPassword(!showPassword)}
           />
         </View>
-        {!isPasswordValid && messagePassword && messagePassword.length > 0 && (
-          <View style={{ marginTop: 10 }}>
-            {messagePassword.map((item) => (
-              <Text style={[styles.invalidText, { fontSize: 9 }]}>
-                * {item}
-              </Text>
-            ))}
-          </View>
-        )}
+
       </View>
       <TouchableOpacity
         style={{

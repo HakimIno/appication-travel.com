@@ -1,5 +1,5 @@
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { SPACING } from "../../constants/theme";
+import { COLORS, SPACING } from "../../constants/theme";
 
 interface Props {
   title: string;
@@ -17,7 +17,18 @@ const SectionHeader = ({
 }: Props) => {
   return (
     <View style={[styles.container, containerStyle]}>
-      <Text style={[styles.title, titleStyle]}>{title}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View
+          style={{
+            width: 5,
+            height: 20,
+            backgroundColor: COLORS.primary,
+            borderRadius: 10,
+            marginRight: SPACING.s,
+          }}
+        />
+        <Text style={[styles.title, titleStyle]}>{title}</Text>
+      </View>
       {onPress && (
         <TouchableOpacity onPress={onPress}>
           <Text style={[styles.allText]}>{buttonTitle}</Text>
@@ -34,8 +45,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginLeft: SPACING.l,
     marginRight: SPACING.m,
-    marginTop: SPACING.s,
-    marginBottom: 10,
+    marginTop: SPACING.l,
+
   },
   title: {
     fontSize: 13,

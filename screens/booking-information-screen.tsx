@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import React, { useMemo, useRef, useState } from "react";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { RootStackParamList } from "../types";
 import { COLORS } from "../constants";
 import { SIZES, SPACING } from "../constants/theme";
@@ -17,10 +17,20 @@ import Divider from "../components/shared/divider";
 import CustomBackground from "../components/trip-details/TripDetailsCard/custom-background";
 import HeaderBooking from "../components/booking/header/header-booking";
 import PdfPrint from "../components/booking/pdf-print";
+import { collection, doc, getDocs, setDoc } from "firebase/firestore";
+import { db } from "../config/config";
+import { StackNavigationProp } from "@react-navigation/stack";
+
+type BookingScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "BookingInformation"
+>;
 
 const BookingInformationScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, "BookingInformation">>();
-  const { title, price, bookingDate, adults, children } = route.params;
+  const { title, price, bookingDate, adults, children, tripsId } = route.params;
+
+  const navigation = useNavigation<BookingScreenNavigationProp>()
 
   const [isShowPDF, setIsShowPDF] = useState(false);
 
@@ -88,6 +98,34 @@ const BookingInformationScreen = () => {
     </>
   );
 
+
+  const handleBooking = async () => {
+    const ordersCollectionRef = collection(db, 'orders');
+    const querySnapshot = await getDocs(ordersCollectionRef);
+
+    const orders = querySnapshot.docs.map((doc) => doc.data());
+
+    const order_booking = {
+      id: orders.length + 1,
+      title: title,
+      fistname: newFirstName,
+      lastname: newLastName,
+      phonnumber: newPhoneNumber,
+      email: newEmail,
+      date: bookingDate,
+      price: price,
+      adults: adults,
+      children: children,
+      status: 'รอชำระเงิน'
+    };
+
+    //await setDoc(doc(db, "orders", `orders-ID-${orders.length + 1}`), order_booking)
+
+    navigation.navigate('ReviewInput', { tripsId: tripsId, title: title })
+
+  }
+
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -129,9 +167,9 @@ const BookingInformationScreen = () => {
                 </Text>
               </TouchableOpacity>
               {newFirstName !== "" &&
-              newLastName !== "" &&
-              newPhoneNumber !== "" &&
-              newEmail ? (
+                newLastName !== "" &&
+                newPhoneNumber !== "" &&
+                newEmail ? (
                 <TouchableOpacity
                   style={[
                     styles.btnAdd,
@@ -247,12 +285,9 @@ const BookingInformationScreen = () => {
             alignItems: "center",
           }}
           onPress={() => {
-            if (
-              newFirstName !== "" &&
-              newLastName !== "" &&
-              newPhoneNumber !== "" &&
-              newEmail !== ""
-            ) {
+            if (!isShowPDF && newFirstName && newLastName && newPhoneNumber && newEmail) {
+              handleBooking();
+
               setIsShowPDF(true);
             }
           }}
