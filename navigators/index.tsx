@@ -24,6 +24,7 @@ import HotelDetailsScreen from "../screens/hotel-details-screen";
 import AllTrips from "../screens/all-trips";
 import NotificationScreen from "../screens/notification-screen";
 import ReviewInputScreen from "../screens/review-input-screen";
+import FullScreenImage from "../screens/full-screen";
 
 const Stack = createSharedElementStackNavigator<RootStackParamList>();
 
@@ -210,6 +211,18 @@ const Navigators = () => {
               />
             ),
           }}
+        />
+
+        <Stack.Screen
+          name="FullScreenImage"
+          component={FullScreenImage}
+          options={({ route }) => ({
+            title: '',
+            headerShown: false,
+            cardStyleInterpolator: ({ current: { progress } }) => ({
+              cardStyle: { opacity: progress },
+            }),
+          })}
         />
 
       </Stack.Navigator>

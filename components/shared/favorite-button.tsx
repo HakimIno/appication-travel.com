@@ -27,7 +27,8 @@ const FavoriteButton = ({ style, onPress }: Props) => {
 const styles = StyleSheet.create({
   view: {
     backgroundColor: COLORS.white,
-    padding: 4,
+    width: 35,
+    height: 35,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 50,

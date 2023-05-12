@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Divider from "../components/shared/divider";
-import { COLORS } from "../constants";
+import { COLORS, images } from "../constants";
 import { SIZES, SPACING } from "../constants/theme";
 import Display from "../utils/Display";
 import { Octicons } from "@expo/vector-icons";
@@ -19,7 +19,7 @@ import {
   useRoute,
 } from "@react-navigation/native";
 import { RootStackParamList } from "../types";
-import LottieView from "lottie-react-native";
+
 import LoadingBooking from "../components/booking/loading-booking";
 import BookingMany from "../components/booking/booking-many";
 import BottomSheet from "@gorhom/bottom-sheet";
@@ -35,7 +35,7 @@ type BookingTripsScreenNavigationProp = NavigationProp<
 const BookingTripScreen = () => {
   const navigation = useNavigation<BookingTripsScreenNavigationProp>();
   const route = useRoute<RouteProp<RootStackParamList, "BookingTrips">>();
-  const { title, price, tripsId } = route.params;
+  const { title, price, tripsId, hotelsId } = route.params;
 
   const details = ["ยกเลิกฟรี (ล่วงหน้า 24 ชั่วโมง)", "ยืนยัน"];
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -52,7 +52,7 @@ const BookingTripScreen = () => {
 
   const day = new Date(date);
   const days = format(day, "dd MMM");
-  
+
 
   if (toDate === toDate) {
     dates.push("พรุ่งนี้");
@@ -249,6 +249,7 @@ const BookingTripScreen = () => {
               if (adults !== 0 || (children !== 0 && activeIndex !== "")) {
                 navigation.navigate("BookingInformation", {
                   tripsId: tripsId,
+                  hotelsId: hotelsId,
                   title: title,
                   price: prices,
                   adults: adults,
@@ -285,7 +286,7 @@ const BookingTripScreen = () => {
         toDate={toDate}
         setActiveIndex={setActiveIndex}
       />
-      {loading && <LoadingBooking />}
+      {loading && <LoadingBooking src={images.loadingData} />}
     </View>
   );
 };

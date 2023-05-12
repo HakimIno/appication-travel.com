@@ -20,13 +20,13 @@ const CategoryCard = ({ name, icon, type }: ItemProps) => {
       style={styles.item}
       onPress={() => navigation.navigate("AllTrips", { type: type })}
     >
-      <Image source={icon} style={{ width: 45, height: 45 }} />
+      <Image source={{ uri: icon}} style={{ width: 55, height: 55 }} />
 
       <Text
         style={{
           textAlign: "center",
-          fontSize: 12,
-          fontFamily: "SukhumvitSet-Bold",
+          fontSize: 11,
+          fontFamily: "SukhumvitSet-SemiBold",
           marginTop: 3,
         }}
       >

@@ -22,6 +22,7 @@ import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../types";
 import { auth, db } from "../config/config";
+import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 
 type InputProps = RouteProp<RootStackParamList, "InputOTP">;
 
@@ -60,13 +61,44 @@ const InputVerificationScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const confirmCode = async () => {
     try {
-      const auth = getAuth();
+
       const credential = PhoneAuthProvider.credential(
         verificationId,
         internalVal
       );
-      await signInWithCredential(auth, credential);
+      await signInWithCredential(auth, credential).then(async (userCredential) => {
+        const user = userCredential.user;
+        const userDocRef = doc(db, "users", `${user?.uid}`);
+
+        const docSnapshot = await getDoc(userDocRef);
+
+
+        const usersCollectionRef = collection(db, 'users');
+        const querySnapshot = await getDocs(usersCollectionRef);
+
+        const usersData = querySnapshot.docs.map((doc) => doc.data());
+
+        if (docSnapshot.exists()) {
+          console.log("User data already exists in Firestore.");
+        } else {
+
+          setDoc(userDocRef, {
+            id: usersData.length + 1,
+            firstName: "",
+            lastName: "",
+            phoneNumber: phoneNumber,
+            email: "",
+          })
+            .then(() => {
+              console.log("User data stored successfully!");
+            })
+            .catch((error) => {
+              console.error("Error storing user data: ", error);
+            });
+        }
+      });
     } catch (error) {
+      console.log(error)
       setErrorMessage("คุณใส่รหัส OTP ไม่ถูกต้องกรุณาตรวจสอบอีกครั้ง");
     }
   };

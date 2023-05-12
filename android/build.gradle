@@ -23,6 +23,11 @@ buildscript {
         classpath 'com.google.gms:google-services:4.3.3'
         classpath('com.android.tools.build:gradle:7.4.1')
         classpath('com.facebook.react:react-native-gradle-plugin') 
+        classpath('com.facebook.yoga:proguard-annotations:1.14.1')
+        classpath('com.facebook.fbjni:fbjni-java-only:0.0.3')
+        classpath('com.facebook.flipper:flipper:0.54.0')
+        classpath('com.facebook.flipper:flipper-network-plugin:0.54.0')
+        classpath('com.facebook.flipper:flipper-fresco-plugin:0.54.0')
     }
 }
 allprojects {

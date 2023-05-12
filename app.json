@@ -7,9 +7,8 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/images/splash/ios/launch_screen@3x.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/images/splash/loading_gif_Imgur.gif",
+      "resizeMode": "cover"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -30,6 +29,7 @@
     },
     "android": {
       "googleServicesFile": "./google-services.json",
+      "useNextNotificationsApi":true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -39,7 +39,8 @@
         "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
-        "android.permission.RECORD_AUDIO"
+        "android.permission.RECORD_AUDIO",
+        "android.permission.POST_NOTIFICATIONS"
       ],
       "package": "com.kimsnow33.travelapp"
     },
@@ -48,7 +49,8 @@
     },
     "extra": {
       "eas": {
-        "projectId": "604316e9-8604-49a9-b586-db69e961e07a"
+        "projectId": "604316e9-8604-49a9-b586-db69e961e07a",
+        "commit": "dc6bbec*"
       }
     },
     "runtimeVersion": "1.0.0",
@@ -66,7 +68,8 @@
       ]
     ],
     "updates": {
-      "url": "https://u.expo.dev/604316e9-8604-49a9-b586-db69e961e07a"
+      "url": "https://u.expo.dev/604316e9-8604-49a9-b586-db69e961e07a",
+      "fallbackToCacheTimeout": 0
     }
   }
 }

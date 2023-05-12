@@ -2,13 +2,16 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import LottieView from "lottie-react-native";
 
-const LoadingBooking = () => {
+interface Props {
+  src: string
+}
+const LoadingBooking = ({ src }: Props) => {
   return (
     <>
       <View style={styles.container}>
         <LottieView
-          style={{ height: 100 }}
-          source={require("../../assets/images/Frame4.json")}
+          style={{ height: 100, marginBottom: 150 }}
+          source={src}
           autoPlay
           loop
         />

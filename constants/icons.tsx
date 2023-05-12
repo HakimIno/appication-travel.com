@@ -9,9 +9,9 @@ const settings = require("../assets/icons/icons8-user-64.png");
 const star = require("../assets/icons/star.png");
 const transaction = require("../assets/icons/transaction.png");
 const message = require("../assets/icons/icons8-message-64.png");
-const hotelIcon = require("../assets/icons/hotel.png");
+const hotelIcon = "https://img.icons8.com/external-wanicon-lineal-color-wanicon/64/external-hotel-beach-wanicon-lineal-color-wanicon.png"
 const hotel = require("../assets/icons/icons8-downtown-64.png");
-const tripsIcon = require("../assets/icons/icons8-carry-on-bag-96.png");
+const tripsIcon = "https://img.icons8.com/color/96/hot-air-balloon.png"
 
 export default {
   back_arrow,

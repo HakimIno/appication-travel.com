@@ -29,14 +29,14 @@ const TripDetailsCarousel = ({ slides, id }: Props) => {
             return (
               <View style={styles.slide}>
                 <SharedElement id={`trip.${id}.image`} style={styles.slide}>
-                  <Image source={{ uri: image }} style={styles.image} />
+                  {image && <Image source={{ uri: image }} style={styles.image} />}
                 </SharedElement>
               </View>
             );
           }
           return (
             <View style={styles.slide}>
-              <Image source={{ uri: image }} style={styles.image} />
+              {image && <Image source={{ uri: image }} style={styles.image} />}
             </View>
           );
         }}
@@ -65,7 +65,7 @@ const TripDetailsCarousel = ({ slides, id }: Props) => {
 const styles = StyleSheet.create({
   slide: {
     width: SIZES.width,
-    height: SIZES.height ,
+    height: SIZES.height,
   },
   image: {
     width: SIZES.width,

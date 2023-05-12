@@ -6,7 +6,7 @@ interface Props {
 }
 
 const CardMedia = ({ source, borderBottomRadius = false }: Props) => {
-  
+
   return (
     <View
       style={[
@@ -16,12 +16,14 @@ const CardMedia = ({ source, borderBottomRadius = false }: Props) => {
           : null,
       ]}
     >
-      <Image
-        style={styles.image}
-        source={{
-          uri: source,
-        }}
-      />
+      {source && (
+        <Image
+          style={styles.image}
+          source={{
+            uri: source,
+          }}
+        />
+      )}
     </View>
   );
 };

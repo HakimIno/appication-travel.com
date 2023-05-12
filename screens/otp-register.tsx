@@ -13,9 +13,7 @@ import { auth, firebaseConfig } from "../config/config";
 
 
 import {
-
   PhoneAuthProvider,
-
 } from "@firebase/auth";
 import { COLORS, SIZES } from "../constants";
 
@@ -36,7 +34,6 @@ type Props = {
 
 const OtpRegister = ({ navigation }: Props) => {
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [verificationId, setVerificationId] = useState("");
 
   const [message, setMessage] = useState("");
   const [focusInput, setFocusInput] = useState(true);
@@ -58,7 +55,7 @@ const OtpRegister = ({ navigation }: Props) => {
         `+66${phoneNumber}`,
         recaptchaVerifier.current!
       );
-      setVerificationId(verificationId);
+      
       if (phoneNumber) {
         navigation.navigate("InputOTP", {
           phoneNumber: phoneNumber,

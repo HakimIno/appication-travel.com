@@ -26,7 +26,7 @@ const MainHeader = () => {
 
       <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
         <Octicons name="bell" size={22} color="white" />
-        <View style={styles.notification}><Text style={{ fontSize: 10, color: COLORS.white, textAlign: 'center' }}>3</Text></View>
+        <View style={styles.notification}></View>
       </TouchableOpacity>
     </View>
   );
@@ -46,11 +46,11 @@ const styles = StyleSheet.create({
   },
   notification: {
     position: 'absolute',
-    right: -7,
-    top: -5,
+    right: -3,
+    top: -3,
     backgroundColor: COLORS.red,
-    width: 18,
-    height: 18,
+    width: 10,
+    height: 10,
     borderRadius: 32
   }
 });

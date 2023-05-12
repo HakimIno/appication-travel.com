@@ -15,7 +15,7 @@ import { SIZES, SPACING } from "../constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { auth, db } from '../config/config'
 import { createUserWithEmailAndPassword } from "@firebase/auth";
-import { doc, setDoc , getDoc} from "firebase/firestore";
+import { doc, setDoc, getDoc, collection, getDocs } from "firebase/firestore";
 type emailScreenProps = StackNavigationProp<RootStackParamList, "Register">;
 
 const RegisterScreen = () => {
@@ -62,11 +62,17 @@ const RegisterScreen = () => {
     setIsPasswordValid(isPasswordValid);
 
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(async(userCredential) => {
 
         const user = userCredential.user;
 
+        const usersCollectionRef = collection(db, 'users');
+        const querySnapshot = await getDocs(usersCollectionRef);
+
+        const usersData = querySnapshot.docs.map((doc) => doc.data());
+
         setDoc(doc(db, "users", `${user?.uid}`), {
+          id: usersData.length + 1,
           firstName: firstName,
           lastName: lastName,
           phoneNumber: phoneNumber,

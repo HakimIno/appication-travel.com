@@ -21,7 +21,7 @@ const CategoryHeader = () => {
           backgroundColor: COLORS.white,
           width: Display.setWidth(85),
           height: 100,
-          elevation: 2,
+          elevation: 5,
           borderRadius: 15,
         }}
       >

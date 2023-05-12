@@ -9,6 +9,8 @@ import {
 import React, { useRef } from "react";
 import { SharedElement } from "react-navigation-shared-element";
 import { SIZES } from "../../constants";
+import * as Animatable from "react-native-animatable";
+import CarouselIndicators from "../shared/carouselIndicators";
 
 interface Props {
   slides: any;
@@ -34,18 +36,35 @@ const HotelsDetailsCarousel = ({ slides, id }: Props) => {
             return (
               <View style={styles.slide}>
                 <SharedElement id={`trip.${id}.image`} style={styles.slide}>
-                  <Image source={{ uri: image }} style={styles.image} />
+                  {image && <Image source={{ uri: image }} style={styles.image} />}
                 </SharedElement>
               </View>
             );
           }
           return (
             <View style={styles.slide}>
-              <Image source={{ uri: image }} style={styles.image} />
+              {image && <Image source={{ uri: image }} style={styles.image} />}
             </View>
           );
         }}
       />
+      {slides.length > 1 && (
+        <Animatable.View
+          style={styles.indicators}
+          animation="fadeInUp"
+          delay={550}
+          duration={400}
+          easing="ease-in-out"
+        >
+          <CarouselIndicators
+            slidesCount={slides.length}
+            slideWidth={SIZES.width}
+            dotSize={8}
+            dotSpacing={6}
+            scrollAnimated={scrollAnimated}
+          />
+        </Animatable.View>
+      )}
     </>
   );
 };

@@ -28,7 +28,7 @@ type BookingScreenNavigationProp = StackNavigationProp<
 
 const BookingInformationScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, "BookingInformation">>();
-  const { title, price, bookingDate, adults, children, tripsId } = route.params;
+  const { title, price, bookingDate, adults, children, tripsId, hotelsId } = route.params;
 
   const navigation = useNavigation<BookingScreenNavigationProp>()
 
@@ -121,7 +121,7 @@ const BookingInformationScreen = () => {
 
     //await setDoc(doc(db, "orders", `orders-ID-${orders.length + 1}`), order_booking)
 
-    navigation.navigate('ReviewInput', { tripsId: tripsId, title: title })
+    navigation.navigate('ReviewInput', { tripsId: tripsId, title: title, hotelsId: hotelsId })
 
   }
 

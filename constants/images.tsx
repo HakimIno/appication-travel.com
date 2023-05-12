@@ -9,7 +9,8 @@ const googlePng = require("../assets/images/googleLogo.png")
 const bgLogin = require("../assets/images/pexels-photo-1078983.jpeg")
 const LogoApp = require("../assets/images/Logo.png")
 const LogoNotify = require("../assets/images/airplane.png")
-
+const reviewsLoad = require("../assets/images/reviewsLoad.json")
+const loadingData = require("../assets/images/Frame4.json")
 export default {
     banner,
     bitcoin,
@@ -21,5 +22,7 @@ export default {
     googlePng,
     bgLogin,
     LogoApp,
-    LogoNotify
+    LogoNotify,
+    reviewsLoad,
+    loadingData
 }

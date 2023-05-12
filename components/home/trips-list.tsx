@@ -20,9 +20,11 @@ interface Props {
 }
 
 const TripsList = ({ list, navigation }: Props) => {
+  
   return (
     <View style={styles.container}>
       {list.map((item: any, index: any) => {
+        
         return (
           <Card
             key={index}

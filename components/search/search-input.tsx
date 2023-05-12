@@ -4,8 +4,12 @@ import { Octicons, Ionicons } from "@expo/vector-icons";
 import { COLORS, SPACING } from "../../constants/theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const SearchInput = () => {
-  const [search, setSearch] = useState("");
+interface Props {
+  search: string
+  setSearch: any;
+}
+const SearchInput = ({ search, setSearch }: Props) => {
+
   const insets = useSafeAreaInsets();
   return (
     <View style={[styles.container, { marginTop: insets.top }]}>

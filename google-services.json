@@ -7,26 +7,26 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1090135174394:android:dd3fa1c60a1552ee8ead43",
+        "mobilesdk_app_id": "1:1090135174394:android:33510124d711975c8ead43",
         "android_client_info": {
           "package_name": "com.kimsnow33.travelapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1090135174394-qqp0uthukppn8fpbul11o1f2mc907r7u.apps.googleusercontent.com",
+          "client_id": "1090135174394-dni61grakdbcctpieah00g0o9qlajsud.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.kimsnow33.travelapp",
-            "certificate_hash": "496a8b49234422d7183deab64eefead0ad556188"
+            "certificate_hash": "cd0a31055428a6455d9dd0d2f7dc81d648de2ffd"
           }
         },
         {
-          "client_id": "1090135174394-ttpp54rtvi4u50hob3rs6amgaun4rpov.apps.googleusercontent.com",
+          "client_id": "1090135174394-dr7qt2tcojubq3ldjk5t2b19c3b4mbne.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.kimsnow33.travelapp",
-            "certificate_hash": "c1f23cb80f26336de102a222d10f3bd5a2093bbd"
+            "certificate_hash": "830f83021dd2afe21e2c06e3895f296b4bc43f1c"
           }
         },
         {

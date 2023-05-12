@@ -58,7 +58,6 @@ const AnimatedDivider = Animated.createAnimatedComponent(Divider);
 
 const TripDetailsCard = ({ trip }: Props) => {
   const snapPoints = useMemo(() => ["30%", "80%"], []);
-
   const animatedIndex = useSharedValue(0);
   const navigation = useNavigation<TripDetailsScreenNavigationProp>();
 
@@ -243,7 +242,7 @@ const TripDetailsCard = ({ trip }: Props) => {
               containerStyle={styles.sectionHeader}
               titleStyle={styles.sectionTitle}
               onPress={() => {}}
-              buttonTitle="ดูทั้งหมด"
+              buttonTitle=""
             />
 
             <HotelsCarousel hotels={trip.hotels} />

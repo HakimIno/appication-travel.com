@@ -1,8 +1,9 @@
-import { FlatList, Image, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { COLORS, images } from '../constants'
 import { SPACING } from '../constants/theme';
 import Divider from '../components/shared/divider';
+import { fetchNotificationData } from '../api/fecth.api';
 
 interface NotificationProps {
     id: number;
@@ -13,45 +14,28 @@ interface NotificationProps {
 
 const NotificationScreen = () => {
 
-    const notification_detail = [
-        {
-            id: 1,
-            title: 'บินตรง ภายใน วันได้แล้ว Travel.com',
-            description: 'travel.com พบกับกิจกรรมมากมายในวันนี้ทางแอป',
-            date: '11 Apr'
-        },
-        {
-            id: 2,
-            title: 'บินตรง ภายใน วันได้แล้ว Travel.com',
-            description: 'travel.com พบกับกิจกรรมมากมายในวันนี้ทางแอป',
-            date: '11 Apr'
-        },
-        {
-            id: 3,
-            title: 'บินตรง ภายใน วันได้แล้ว Travel.com',
-            description: 'travel.com พบกับกิจกรรมมากมายในวันนี้ทางแอป',
-            date: '11 Apr'
-        },
-        {
-            id: 4,
-            title: 'บินตรง ภายใน วันได้แล้ว Travel.com',
-            description: 'travel.com พบกับกิจกรรมมากมายในวันนี้ทางแอป',
-            date: '11 Apr'
-        },
-        {
-            id: 5,
-            title: 'บินตรง ภายใน วันได้แล้ว Travel.com',
-            description: 'travel.com พบกับกิจกรรมมากมายในวันนี้ทางแอป',
-            date: '11 Apr'
-        },
+    const [notification, setNotification] = useState<NotificationProps[]>([])
 
-    ]
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const notifys = await fetchNotificationData();
+
+                setNotification(notifys as unknown as NotificationProps[])
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        fetchData()
+    }, []);
+
 
 
     function NotificationCard({ item }: { item: NotificationProps }) {
+
         return (
             <>
-                <View style={styles.listContainer}>
+                <TouchableOpacity style={styles.listContainer} >
                     <View >
                         <Image
                             source={images.LogoNotify}
@@ -66,10 +50,10 @@ const NotificationScreen = () => {
                                 <Text numberOfLines={1} style={[styles.fontTextBold, { fontSize: 13, }]}>{item.title}</Text>
                                 <Text numberOfLines={2} style={[styles.fontText, { fontSize: 11, color: COLORS.slate }]}>{item.description}</Text>
                             </View>
-                            <Text style={[styles.fontText, { fontSize: 12, marginHorizontal: SPACING.m, color: COLORS.slate }]}>{item.date}</Text>
+                            <Text style={[styles.fontText, { fontSize: 11, marginHorizontal: SPACING.m, color: COLORS.slate }]}>{item.date}</Text>
                         </View>
                     </View>
-                </View>
+                </TouchableOpacity>
                 <Divider enabledSpacing />
             </>
         )
@@ -78,7 +62,7 @@ const NotificationScreen = () => {
     return (
         <View style={styles.container}>
             <FlatList
-                data={notification_detail}
+                data={notification}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => <NotificationCard item={item} />}

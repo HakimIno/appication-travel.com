@@ -1,11 +1,13 @@
 type BookingTripsList = {
   title: any;
-  tripsId: any;
+  tripsId?: any;
+  hotelsId?: any;
   price: any
 }
 type BookingInformationList = {
   title: any;
-  tripsId: any;
+  tripsId?: any;
+  hotelsId?: any;
   price: any;
   adults: any;
   children: any;
@@ -33,8 +35,8 @@ export type RootStackParamList = {
   Search: undefined;
   BookingTrips: BookingTripsList;
   BookingInformation: BookingInformationList;
-  ReviewInput: { title: any, tripsId: any };
+  ReviewInput: { title: any, tripsId?: any, hotelsId?: any };
   Settings: RootParams;
-
+  FullScreenImage: { imageUrl: any }
 };
 

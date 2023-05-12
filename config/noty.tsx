@@ -3,15 +3,14 @@ import { Platform } from "react-native";
 
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import * as Constants from "expo-constants";
-import * as Permissions from "expo-permissions";
+
 const appConfig = require('../app.json');
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
   }),
 });
 
@@ -27,6 +26,7 @@ export const NotificationProvider = ({ children }: any) => {
   const [notification, setNotification] = useState<any>(null);
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
+
 
   useEffect(() => {
     notificationListener.current =
@@ -65,14 +65,13 @@ export const NotificationProvider = ({ children }: any) => {
               const { status } = await Notifications.requestPermissionsAsync();
               finalStatus = status;
             }
-            console.log(finalStatus);
             if (finalStatus !== "granted") {
               alert("Failed to get push token for push notification!");
               return;
             }
-            const projectId =  appConfig?.expo?.extra?.eas?.projectId;
-            console.log(projectId)
-            token = (await Notifications.getExpoPushTokenAsync()).data;
+            const projectId = appConfig?.expo?.extra?.eas?.projectId;
+
+            token = (await Notifications.getExpoPushTokenAsync({ projectId: projectId })).data;
             console.log(token);
           } else {
             alert("Must use physical device for Push Notifications");

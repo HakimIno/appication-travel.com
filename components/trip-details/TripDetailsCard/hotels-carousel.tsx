@@ -6,6 +6,8 @@ import Rating from "../../shared/Rating/rating";
 import { COLORS, SIZES } from "../../../constants";
 
 import HotelsCarouselCompo from "../../shared/hoteal-carousel-compo";
+import { RootStackParamList } from "../../../types";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 const CARD_HEIGHT = 200;
 
@@ -13,7 +15,14 @@ interface Props {
   hotels: any;
 }
 
+type TripDetailsScreenNavigationProp = NavigationProp<
+  RootStackParamList,
+  "TripDetails"
+>;
+
 const HotelsCarousel = ({ hotels }: Props) => {
+  const navigation = useNavigation<TripDetailsScreenNavigationProp>();
+
   return (
     <HotelsCarouselCompo
       items={hotels}
@@ -21,10 +30,10 @@ const HotelsCarousel = ({ hotels }: Props) => {
         return (
           <Card
             style={[styles.card, style]}
-            onPress={() => console.log("xxxxxx")}
+            onPress={() => navigation.navigate("HotelScreen", { hotel: item })}
           >
             {/* <CardFavoriteIcon active={false} onPress={() => {}} /> */}
-            <CardMedia source={item.image}  />
+            <CardMedia source={item.image} />
             <CardContent style={styles.content}>
               <View style={styles.titleBox}>
                 <Text style={styles.title} numberOfLines={1}>

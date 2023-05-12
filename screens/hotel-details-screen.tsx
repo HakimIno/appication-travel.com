@@ -24,7 +24,7 @@ const HotelDetailsScreen = ({route}: Props) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<HotelScreenNavigationProp>();
   const { hotel } = route.params;
-  const slides = [hotel.image];
+  const slides = [hotel.image ,...hotel.gallery];
   return (
     <View style={styles.container}>
       <Animatable.View

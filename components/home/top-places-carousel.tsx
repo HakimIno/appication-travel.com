@@ -45,7 +45,7 @@ const TopPlacesCarousel = ({ list, navigation }: Props) => {
               <CardMedia source={item.image} borderBottomRadius />
             </SharedElement>
             <View style={styles.titleBox}>
-              <Text style={styles.title}>{item.title}</Text>
+              <Text style={styles.title} numberOfLines={2}>{item.title}</Text>
               <Text style={styles.location}>{item.location}</Text>
             </View>
           </Card>
@@ -74,15 +74,16 @@ const styles = StyleSheet.create({
   titleBox: {
     position: "absolute",
     top: CARD_HEIGHT - 80,
-    left: 16,
+    left: 15,
+    width: 300
   },
   title: {
-    fontSize: 14,
+    fontSize: 13,
     fontFamily: "SukhumvitSet-SemiBold",
     color: COLORS.white,
   },
   location: {
-    fontSize: 13,
+    fontSize: 12,
     color: COLORS.white,
     fontFamily: "SukhumvitSet-SemiBold",
   },

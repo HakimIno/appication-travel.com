@@ -4,21 +4,19 @@ import {
   View,
   StatusBar,
   ScrollView,
-  Animated,
-  TouchableOpacity,
+
   Platform,
-  AppState,
+
   Alert,
   Text,
-} from "react-native";
-import React, { useState, useEffect, useRef, useMemo, useContext, useLayoutEffect } from "react";
-import { Feather } from "@expo/vector-icons";
-import { COLORS, FONTS, icons, images } from "../constants";
+  TouchableOpacity,
 
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+} from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+
+import { COLORS } from "../constants";
+
+
 
 import Display from "../utils/Display";
 
@@ -40,15 +38,16 @@ import "firebase/messaging";
 import "firebase/functions";
 import "firebase/auth";
 import "firebase/firestore";
-import { NotificationContext } from "../config/noty";
 
-
-import Constants from 'expo-constants';
-import { DocumentData, collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { DocumentData, collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 
 import { db } from "../config/config";
-import HeaderBooking from "../components/booking/header/header-booking";
 import PromotionCarousel from "../components/home/promotion-carousel";
+import * as Notifications from "expo-notifications";
+import * as Devices from "expo-device";
+import Constants from 'expo-constants'
+import { firebaseConfig } from "../config/config";
+import { fetchPublic_RelationsData, fetchTripsDataQuery } from "../api/fecth.api";
 
 
 type CurrentScreenNavigationProp = StackNavigationProp<
@@ -56,20 +55,82 @@ type CurrentScreenNavigationProp = StackNavigationProp<
   "Home"
 >;
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false
+  })
+})
+
+async function sendPushNotification(expoPushToken: string) {
+  console.log(expoPushToken)
+  const message = {
+    to: expoPushToken,
+    sound: 'default',
+    title: 'Original Title',
+    body: 'And here is the body!',
+    data: { someData: 'goes here' },
+  };
+
+  await fetch('https://exp.host/--/api/v2/push/send', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-encoding': 'gzip, deflate',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(message),
+  });
+}
+
+interface Publics {
+  id: number,
+  image: string
+}
+
+
 const Home = () => {
   const navigation = useNavigation<CurrentScreenNavigationProp>();
-  const { registerForPushNotifications } = useContext(NotificationContext);
 
   const [text, setText] = useState("Hi,kimsnow");
-
+  const [public_relations, setPublic_relations] = useState<Publics[]>([])
   const [tripsData, setTripsData] = useState<any>(null);
-
 
   const message = [
     "สวัสวดีค่ะ ,“คุณอูฐ”",
     "“ฉันจะเดินหนึ่งไมล์เพื่ออูฐ”",
     "เมื่อคุณใส่ใจพอที่จะส่งสิ่งที่ดีที่สุด ",
   ];
+
+  const [expoPushToken, setExpoPushToken] = useState('')
+  const [notification, setNotification] = useState<any>(false);
+  const notificationListener = useRef<Notifications.Subscription | undefined>();
+  const responseListener = useRef<Notifications.Subscription | undefined>();
+
+
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token: any) => setExpoPushToken(token));
+
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
+    });
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      setNotification(response);
+    });
+
+    return () => {
+      if (notificationListener.current) {
+        Notifications.removeNotificationSubscription(notificationListener.current);
+      }
+      if (responseListener.current) {
+        Notifications.removeNotificationSubscription(responseListener.current);
+      }
+    };
+  }, []);
+
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -89,23 +150,30 @@ const Home = () => {
   useEffect(() => {
     const fetchTripsData = async () => {
       try {
-        const tripsCollectionRef = collection(db, 'trips');
-        const querySnapshot = await getDocs(tripsCollectionRef);
 
-        const tripsData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-          hotels: [],
-          reviews: [],
-        }));
+        const queryTrips = await fetchTripsDataQuery()
 
-        setTripsData(tripsData);
+        setTripsData(queryTrips);
       } catch (error) {
         console.log('Error getting trips data:', error);
       }
     };
 
     fetchTripsData();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const public_relation = await fetchPublic_RelationsData();
+
+        setPublic_relations(public_relation as unknown as Publics[])
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchData()
   }, []);
 
 
@@ -138,7 +206,7 @@ const Home = () => {
           }}
         />
 
-        <PromotionCarousel list={PROMOTION} />
+        <PromotionCarousel list={public_relations} />
 
         <SectionHeader
           title="ทัวร์แนะนำ"
@@ -148,7 +216,7 @@ const Home = () => {
           }}
         />
 
-        <TopPlacesCarousel list={TOP_PLACES} navigation={navigation} />
+        {tripsData && <TopPlacesCarousel list={tripsData} navigation={navigation} />}
         <SectionHeader
           title="ทัวร์ทั่วโลก"
           buttonTitle="ดูทั้งหมด"
@@ -159,7 +227,6 @@ const Home = () => {
 
 
         {/* <TripsList list={PLACES} navigation={navigation} /> */}
-        <TripsList list={PLACES} navigation={navigation} />
 
         {tripsData && <TripsList list={tripsData} navigation={navigation} />}
 
@@ -189,3 +256,35 @@ const styles = StyleSheet.create({
 });
 
 export default Home;
+
+
+async function registerForPushNotificationsAsync() {
+  let token
+
+  if (Devices.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync()
+    let finalStatus = existingStatus
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync()
+      finalStatus = status
+    }
+
+    if (finalStatus !== 'granted') {
+      Alert.alert('Failed to get push token for push notification!')
+      return
+    }
+
+    token = (await Notifications.getDevicePushTokenAsync()).data
+  }
+
+  if (Platform.OS === 'android') {
+    Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C'
+    })
+  }
+
+  return token
+}

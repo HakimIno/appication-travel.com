@@ -137,10 +137,11 @@ const HotelDetailsCard = ({ hotel }: Props) => {
     ),
   }));
 
-  const openMaps = () => {
-    Linking.openURL("https://www.google.com/maps");
+  const openMaps = (map: any) => {
+    const url = map;
+    Linking.openURL(url);
   };
-
+  
   return (
     <>
       <BottomSheet
@@ -178,9 +179,9 @@ const HotelDetailsCard = ({ hotel }: Props) => {
           </View>
 
           <Animated.View style={contentStyle}>
-            <TouchableOpacity onPress={openMaps} style={styles.mapsStyle}>
+            <TouchableOpacity onPress={() => openMaps(hotel.map_location)} style={styles.mapsStyle}>
               <Image
-                source={icons.hotelIcon}
+                source={{ uri: icons.hotelIcon }}
                 style={{ width: 30, height: 30 }}
               />
               <Text
@@ -190,7 +191,7 @@ const HotelDetailsCard = ({ hotel }: Props) => {
                 ]}
                 numberOfLines={1}
               >
-                เดอะ+เซน+พัทยาxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                {hotel.location}
               </Text>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <FontAwesome5
@@ -214,12 +215,13 @@ const HotelDetailsCard = ({ hotel }: Props) => {
         <BottomSheetScrollView
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
+          style={styles.scrollBox}
         >
           <Animated.View style={contentStyle}>
             <SectionHeader
               title="รายละเอียดที่พัก"
               buttonTitle=""
-              onPress={() => {}}
+              onPress={() => { }}
             />
             <View style={styles.summary}>
               <Text style={styles.summaryText}>{hotel.description}</Text>
@@ -229,7 +231,7 @@ const HotelDetailsCard = ({ hotel }: Props) => {
               title={`รีวิว (${hotel.reviews.length})`}
               containerStyle={styles.sectionHeader}
               titleStyle={styles.sectionTitle}
-              onPress={() => {}}
+              onPress={() => { }}
               buttonTitle=""
             />
             <RatingOverall
@@ -264,6 +266,7 @@ const HotelDetailsCard = ({ hotel }: Props) => {
           onPress={() =>
             navigation.navigate("BookingTrips", {
               title: hotel.title,
+              hotelsId: hotel.hotelsId,
               price: hotel.pricePeerDay,
             })
           }
@@ -336,5 +339,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: COLORS.primary,
     fontFamily: "SukhumvitSet-Bold",
+  },
+  scrollBox: {
+    marginBottom: SPACING.l,
   },
 });

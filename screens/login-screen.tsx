@@ -13,7 +13,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 import { A } from "@expo/html-elements";
 import * as AuthSession from "expo-auth-session";
-/* import * as Facebook from "expo-facebook"; */
+import * as Facebook from "expo-facebook";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -35,27 +35,25 @@ type Props = {
 };
 
 
-
 export const LoginScreen = ({ navigation }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((token) => {
-      if (!token) {
+      if (token) {
         navigation.reset({
           index: 0,
-          routes: [{ name: "Root" ,}],
+          routes: [{ name: "Root", }],
         });
       }
     });
     return unsubscribe;
   }, []);
 
-/*   const signInFacebook = async () => {
+  const signInFacebook = async () => {
 
     Facebook.initializeAsync({
-      appId: "808694957342165",
-      appName: "travel.com",
+      appId: "808694957342165"
     }).then(() => {
       return Facebook.logInWithReadPermissionsAsync({
         permissions: ["public_profile", "email"],
@@ -76,7 +74,8 @@ export const LoginScreen = ({ navigation }: Props) => {
           console.log("error", error);
         });
     });
-  }; */
+  };
+
 
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>
@@ -100,7 +99,7 @@ export const LoginScreen = ({ navigation }: Props) => {
           {/* Facebook Login */}
           <TouchableOpacity
             style={[styles.facebookContainer, styles.shadowProp]}
-            onPress={() => {}}
+            onPress={signInFacebook}
           >
             <MaterialIcons name="facebook" size={27} color={COLORS.white} />
             <Text style={styles.facebookText}>เข้าระบบผ่าน Facebook</Text>
