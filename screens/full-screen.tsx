@@ -24,7 +24,6 @@ const FullScreenImage = () => {
     const { imageUrl } = route.params;
     const insets = useSafeAreaInsets();
 
-
     const scrollAnimated = useRef(new Animated.Value(0)).current;
 
     return (
@@ -77,16 +76,19 @@ const styles = StyleSheet.create({
     backButton: {
         position: 'absolute',
         top: 30,
-        right: 30,
+        left: 30,
         zIndex: 1,
     },
     slide: {
         width: SIZES.width,
         height: SIZES.height,
+        alignItems: "center",
+        justifyContent: 'center'
     },
     image: {
-        width: SIZES.width,
-        height: SIZES.height,
+
+        width: SIZES.width - 20,
+        height: SIZES.height - 300,
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         resizeMode: "cover",

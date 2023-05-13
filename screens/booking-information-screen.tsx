@@ -119,13 +119,11 @@ const BookingInformationScreen = () => {
       status: 'รอชำระเงิน'
     };
 
-    //await setDoc(doc(db, "orders", `orders-ID-${orders.length + 1}`), order_booking)
+    await setDoc(doc(db, "orders", `orders-ID-${orders.length + 1}`), order_booking)
 
     navigation.navigate('ReviewInput', { tripsId: tripsId, title: title, hotelsId: hotelsId })
-
   }
-
-
+  
   return (
     <View style={styles.container}>
       <ScrollView>

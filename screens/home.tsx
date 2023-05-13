@@ -48,6 +48,7 @@ import * as Devices from "expo-device";
 import Constants from 'expo-constants'
 import { firebaseConfig } from "../config/config";
 import { fetchPublic_RelationsData, fetchTripsDataQuery } from "../api/fecth.api";
+import { TripsProps } from "../interface";
 
 
 type CurrentScreenNavigationProp = StackNavigationProp<
@@ -90,12 +91,15 @@ interface Publics {
 }
 
 
+
 const Home = () => {
   const navigation = useNavigation<CurrentScreenNavigationProp>();
 
   const [text, setText] = useState("Hi,kimsnow");
   const [public_relations, setPublic_relations] = useState<Publics[]>([])
-  const [tripsData, setTripsData] = useState<any>(null);
+  const [tripsData, setTripsData] = useState<TripsProps[]>([]);
+
+  const trips = tripsData.slice(0, 4);
 
   const message = [
     "สวัสวดีค่ะ ,“คุณอูฐ”",
@@ -107,7 +111,6 @@ const Home = () => {
   const [notification, setNotification] = useState<any>(false);
   const notificationListener = useRef<Notifications.Subscription | undefined>();
   const responseListener = useRef<Notifications.Subscription | undefined>();
-
 
 
   useEffect(() => {
@@ -153,7 +156,7 @@ const Home = () => {
 
         const queryTrips = await fetchTripsDataQuery()
 
-        setTripsData(queryTrips);
+        setTripsData(queryTrips as unknown as TripsProps[]);
       } catch (error) {
         console.log('Error getting trips data:', error);
       }
@@ -161,6 +164,7 @@ const Home = () => {
 
     fetchTripsData();
   }, []);
+
 
 
   useEffect(() => {
@@ -228,7 +232,7 @@ const Home = () => {
 
         {/* <TripsList list={PLACES} navigation={navigation} /> */}
 
-        {tripsData && <TripsList list={tripsData} navigation={navigation} />}
+        {trips && <TripsList list={trips} navigation={navigation} />}
 
 
         <View style={{ marginVertical: Display.setHeight(5) }} />

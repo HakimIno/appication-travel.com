@@ -6,13 +6,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+
 import Display from "../utils/Display";
 import { COLORS, FONTS, SIZES, images } from "../constants";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import { A } from "@expo/html-elements";
-import * as AuthSession from "expo-auth-session";
 import * as Facebook from "expo-facebook";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -25,8 +24,9 @@ import {
 } from "@firebase/auth";
 
 import { auth } from "../config/config";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useState } from "react";
 import { SPACING } from "../constants/theme";
 
@@ -34,6 +34,7 @@ type Props = {
   navigation: any;
 };
 
+WebBrowser.maybeCompleteAuthSession();
 
 export const LoginScreen = ({ navigation }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -51,31 +52,27 @@ export const LoginScreen = ({ navigation }: Props) => {
   }, []);
 
   const signInFacebook = async () => {
+    try {
+      await Facebook.initializeAsync({
+        appId: "808694957342165"
+      });
 
-    Facebook.initializeAsync({
-      appId: "808694957342165"
-    }).then(() => {
-      return Facebook.logInWithReadPermissionsAsync({
+      const result = await Facebook.logInWithReadPermissionsAsync({
         permissions: ["public_profile", "email"],
-      })
-        .then((result) => {
-          if (result.type === "success") {
-            const credential = FacebookAuthProvider.credential(result.token);
-            signInWithCredential(auth, credential).then((userCredentials) => {
-              userCredentials.user?.getIdToken();
-              console.log("Login success!!");
-            });
+      });
 
-          } else {
-            console.log("Facebook login error:", result);
-          }
-        })
-        .catch((error) => {
-          console.log("error", error);
-        });
-    });
+      if (result.type === "success") {
+        const credential = FacebookAuthProvider.credential(result.token);
+        const userCredentials = await signInWithCredential(auth, credential);
+        userCredentials.user?.getIdToken();
+        console.log("Login success!!");
+      } else {
+        console.log("Facebook login error:", result);
+      }
+    } catch (error) {
+      console.log("Error during Facebook login:", error);
+    }
   };
-
 
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>

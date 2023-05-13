@@ -20,7 +20,7 @@ interface Props {
 const HotelsDetailsCarousel = ({ slides, id }: Props) => {
   const scrollAnimated = useRef(new Animated.Value(0)).current;
   return (
-    <>
+    <View style={styles.container}>
       <Animated.FlatList
         data={slides}
         horizontal
@@ -65,19 +65,26 @@ const HotelsDetailsCarousel = ({ slides, id }: Props) => {
           />
         </Animatable.View>
       )}
-    </>
+    </View>
   );
 };
 
 export default HotelsDetailsCarousel;
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#000',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   slide: {
     width: SIZES.width,
     height: SIZES.height,
+    alignItems: "center",
+    justifyContent: 'center'
   },
   image: {
-    width: SIZES.width,
+    width: SIZES.width ,
     height: SIZES.height,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,

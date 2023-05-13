@@ -17,7 +17,7 @@ type CurrentScreenNavigationProp = StackNavigationProp<
 const Review = ({ review }: any) => {
 
   const navigation = useNavigation<CurrentScreenNavigationProp>();
-  
+
   return (
     <>
 
@@ -44,7 +44,12 @@ const Review = ({ review }: any) => {
               <View key={index}>
                 {item && (
                   <TouchableOpacity
-                    onPress={() => navigation.navigate('FullScreenImage', { imageUrl: [...review.imageReview] })}
+
+                    onPress={() => {
+                      const remainingImages = review.imageReview.filter((_: any, idx: number) => idx !== index)
+                      navigation.navigate('FullScreenImage', { imageUrl: [item, ...remainingImages] })
+                    }
+                    }
                   >
                     <SharedElement id={`image.${item}`}>
                       <Image

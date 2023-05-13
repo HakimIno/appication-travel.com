@@ -32,10 +32,8 @@ const TripDetailsScreen = () => {
     try {
       const fileUri = FileSystem.cacheDirectory + 'image.jpg';
 
-      // Download the image file
       await FileSystem.downloadAsync(imageUrl, fileUri);
 
-      // Share the downloaded image file
       await Sharing.shareAsync(fileUri, { dialogTitle: title });
     } catch (error) {
       console.log('Error sharing', error);

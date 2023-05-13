@@ -67,11 +67,10 @@ const InputVerificationScreen: React.FC<Props> = ({ route, navigation }) => {
         internalVal
       );
       await signInWithCredential(auth, credential).then(async (userCredential) => {
-        const user = userCredential.user;
-        const userDocRef = doc(db, "users", `${user?.uid}`);
+        const users = userCredential.user;
+        const userDocRef = doc(db, "users", `${users?.uid}`);
 
         const docSnapshot = await getDoc(userDocRef);
-
 
         const usersCollectionRef = collection(db, 'users');
         const querySnapshot = await getDocs(usersCollectionRef);

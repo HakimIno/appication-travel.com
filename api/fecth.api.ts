@@ -57,7 +57,7 @@ export const fetchTripsDataQuery = async () => {
     try {
 
         const tripsQuerySnapshot = await allFetchData('trips')
-        
+
         const trips = await Promise.all(
             tripsQuerySnapshot.docs.map(async (doc) => {
 
@@ -77,11 +77,17 @@ export const fetchTripsDataQuery = async () => {
                     ...reviewDoc.data(),
                 }));
 
-                const hotelsData = hotelsQuerySnapshot.docs.map((hotelsDoc) => ({
-                    id: hotelsDoc.id,
-                    reviews: [],
-                    ...hotelsDoc.data(),
-                }));
+                const hotelPromises = hotelsQuerySnapshot.docs.map(async (doc) => {
+                    const hotelId = doc.id;
+                    const reviewsDataHotels = await getReviewsData(hotelId);
+                    return {
+                        id: hotelId,
+                        reviews: reviewsDataHotels,
+                        ...doc.data(),
+                    };
+                });
+
+                const hotelsData = await Promise.all(hotelPromises);
 
                 return {
                     id: tripId,
@@ -105,7 +111,7 @@ export const fetchHotelsDataQuery = async () => {
 
         const hotelsQuerySnapshot = await allFetchData('hotels')
 
-        const trips = await Promise.all(
+        const hotels = await Promise.all(
             hotelsQuerySnapshot.docs.map(async (doc) => {
                 const hotelsId = doc.id;
 
@@ -120,7 +126,7 @@ export const fetchHotelsDataQuery = async () => {
             })
         );
 
-        return trips;
+        return hotels;
     } catch (error) {
         console.log('Error getting trips data:', error);
     }

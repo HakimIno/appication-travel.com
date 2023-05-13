@@ -28,20 +28,32 @@ const EmailLoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
-
+  const [message, setMessage] = useState("")
 
   // handleLogin
   const handleLogin = () => {
-    signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
-      const user = userCredential.user;
-    })
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        console.log("Login successful")
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+
+        if (errorCode === "auth/wrong-password") {
+          setMessage("รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง")
+        } else {
+
+          console.log(errorMessage);
+        }
+      });
   };
+
 
   useEffect(() => {
     try {
       const unsubscribe = auth.onAuthStateChanged((authUser) => {
         if (authUser) {
-
           navigation.reset({
             index: 0,
             routes: [{
@@ -117,6 +129,7 @@ const EmailLoginScreen = () => {
         </View>
 
       </View>
+      {message && (<Text style={[styles.invalidText, { marginTop: SPACING.s}]}>{message}</Text>)}
       <TouchableOpacity
         style={{
           alignItems: "flex-end",
@@ -242,4 +255,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginHorizontal: SPACING.l,
   },
+  
 });
