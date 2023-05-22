@@ -33,5 +33,6 @@ export interface TripsProps {
     reviews: Reviews[],
     detailsTripsDay: string[],
     price: string,
+    childrenPrice: string;
     type: string
 }

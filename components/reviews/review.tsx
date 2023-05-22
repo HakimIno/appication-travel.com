@@ -18,6 +18,8 @@ const Review = ({ review }: any) => {
 
   const navigation = useNavigation<CurrentScreenNavigationProp>();
 
+  const avatar = 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.pinclipart.com%2Fpicdir%2Fbig%2F133-1331433_free-user-avatar-icons-happy-flat-design-png.png&f=1&nofb=1&ipt=0144a5bb7e8aa21c3a723dae791c2a20313de739c232baceb048ce5c7930f350&ipo=images'
+
   return (
     <>
 
@@ -26,7 +28,7 @@ const Review = ({ review }: any) => {
 
           <View style={styles.userBox}>
             <Image
-              source={{ uri: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.pinclipart.com%2Fpicdir%2Fbig%2F133-1331433_free-user-avatar-icons-happy-flat-design-png.png&f=1&nofb=1&ipt=0144a5bb7e8aa21c3a723dae791c2a20313de739c232baceb048ce5c7930f350&ipo=images' }}
+              source={{ uri: review.profileUrl ? review.profileUrl : avatar }}
               style={{ width: 40, height: 40, borderRadius: 30 }} />
             <View style={{ marginHorizontal: SPACING.s }}>
               <Text style={styles.user}>{review.author.username ? review.author.username : review.author}</Text>

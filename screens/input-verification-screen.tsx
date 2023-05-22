@@ -72,17 +72,12 @@ const InputVerificationScreen: React.FC<Props> = ({ route, navigation }) => {
 
         const docSnapshot = await getDoc(userDocRef);
 
-        const usersCollectionRef = collection(db, 'users');
-        const querySnapshot = await getDocs(usersCollectionRef);
-
-        const usersData = querySnapshot.docs.map((doc) => doc.data());
-
         if (docSnapshot.exists()) {
           console.log("User data already exists in Firestore.");
         } else {
 
           setDoc(userDocRef, {
-            id: usersData.length + 1,
+            profileUrl: "",
             firstName: "",
             lastName: "",
             phoneNumber: phoneNumber,

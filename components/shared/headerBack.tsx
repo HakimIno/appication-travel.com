@@ -10,7 +10,7 @@ interface Props {
 export const HeaderBack = ({ onPress }: Props) => {
   const insets = useSafeAreaInsets();
   return (
-    <View style={{ margin: SPACING.m, width: 30 }}>
+    <View style={{ margin: SPACING.m, marginTop: insets.top + 5 }}>
       <MaterialIcons
         name="arrow-back"
         size={24}

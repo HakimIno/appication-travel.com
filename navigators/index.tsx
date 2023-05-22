@@ -5,7 +5,7 @@ import {
 import { CardStyleInterpolators } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import Tabs from "./Tabs";
-import { Transaction } from "../screens";
+
 import { LoginScreen } from "../screens/login-screen";
 import OtpRegister from "../screens/otp-register";
 import InputVerificationScreen from "../screens/input-verification-screen";
@@ -25,6 +25,12 @@ import AllTrips from "../screens/all-trips";
 import NotificationScreen from "../screens/notification-screen";
 import ReviewInputScreen from "../screens/review-input-screen";
 import FullScreenImage from "../screens/full-screen";
+import ForgotPasswordScreen from "../screens/forgot-password-screen";
+import HotelsBookingScreen from "../screens/hotels-booking";
+import FavoriteScreen from "../screens/favorite-screen";
+import NotificationDetails from "../screens/notification-details";
+import PromoDetails from "../screens/promo-details";
+import AboutScreen from "../screens/about-screen";
 
 const Stack = createSharedElementStackNavigator<RootStackParamList>();
 
@@ -45,6 +51,7 @@ const Navigators = () => {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="EmailLogin" component={EmailLoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="SendOTP" component={OtpRegister} />
         <Stack.Screen name="InputOTP" component={InputVerificationScreen} />
         <Stack.Screen
@@ -169,6 +176,29 @@ const Navigators = () => {
           }}
         />
         <Stack.Screen
+          name="BookingHotels"
+          component={HotelsBookingScreen}
+          options={{
+            headerShown: true,
+            title: "ตัวเลือกการจอง",
+            headerTitleStyle: {
+              fontSize: 15,
+              color: COLORS.black,
+              fontFamily: "SukhumvitSet-Bold",
+            },
+            headerBackImage: () => (
+              <Octicons
+                name="arrow-left"
+                size={24}
+                color={COLORS.black}
+                style={{ marginLeft: 10 }}
+              />
+            ),
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+            gestureDirection: "horizontal",
+          }}
+        />
+        <Stack.Screen
           name="BookingInformation"
           component={BookingInformationScreen}
           options={{
@@ -189,6 +219,28 @@ const Navigators = () => {
             ),
             cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
             gestureDirection: "horizontal",
+          }}
+        />
+
+        <Stack.Screen
+          name="Favorite"
+          component={FavoriteScreen}
+          options={{
+            headerShown: true,
+            title: "รายการโปรด",
+            headerTitleStyle: {
+              fontSize: 15,
+              color: COLORS.black,
+              fontFamily: "SukhumvitSet-Bold",
+            },
+            headerBackImage: () => (
+              <Octicons
+                name="arrow-left"
+                size={24}
+                color={COLORS.black}
+                style={{ marginLeft: 10 }}
+              />
+            ),
           }}
         />
         <Stack.Screen
@@ -212,6 +264,73 @@ const Navigators = () => {
             ),
           }}
         />
+        <Stack.Screen
+          name="PromoDetails"
+          component={PromoDetails}
+          options={{
+            headerShown: true,
+            title: "โปรโมชั่นสุดพิเศษ",
+            headerTitleStyle: {
+              fontSize: 15,
+              color: COLORS.black,
+              fontFamily: "SukhumvitSet-Bold",
+            },
+            headerBackImage: () => (
+              <Octicons
+                name="arrow-left"
+                size={24}
+                color={COLORS.black}
+                style={{ marginLeft: 10 }}
+              />
+            ),
+          }}
+        />
+
+
+        <Stack.Screen
+          name="NotificationDetails"
+          component={NotificationDetails}
+          options={{
+            headerShown: true,
+            title: "Aumanan Juket",
+            headerTitleStyle: {
+              fontSize: 15,
+              color: COLORS.black,
+              fontFamily: "SukhumvitSet-Bold",
+            },
+            headerBackImage: () => (
+              <Octicons
+                name="arrow-left"
+                size={24}
+                color={COLORS.black}
+                style={{ marginLeft: 10 }}
+              />
+            ),
+          }}
+        />
+
+        <Stack.Screen
+          name="About"
+          component={AboutScreen}
+          options={{
+            headerShown: true,
+            title: "",
+            headerTitleStyle: {
+              fontSize: 15,
+              color: COLORS.black,
+              fontFamily: "SukhumvitSet-Bold",
+            },
+            headerBackImage: () => (
+              <Octicons
+                name="arrow-left"
+                size={24}
+                color={COLORS.black}
+                style={{ marginLeft: 10 }}
+              />
+            ),
+          }}
+        />
+
 
         <Stack.Screen
           name="FullScreenImage"

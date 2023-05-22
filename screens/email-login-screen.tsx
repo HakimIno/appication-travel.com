@@ -136,6 +136,7 @@ const EmailLoginScreen = () => {
           marginHorizontal: SPACING.l,
           marginVertical: SPACING.m,
         }}
+        onPress={() => navigation.navigate("ForgotPassword")}
       >
         <Text
           style={{

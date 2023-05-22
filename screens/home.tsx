@@ -49,6 +49,7 @@ import Constants from 'expo-constants'
 import { firebaseConfig } from "../config/config";
 import { fetchPublic_RelationsData, fetchTripsDataQuery } from "../api/fecth.api";
 import { TripsProps } from "../interface";
+import { RefreshControl } from "react-native";
 
 
 type CurrentScreenNavigationProp = StackNavigationProp<
@@ -90,12 +91,10 @@ interface Publics {
   image: string
 }
 
-
-
 const Home = () => {
   const navigation = useNavigation<CurrentScreenNavigationProp>();
 
-  const [text, setText] = useState("Hi,kimsnow");
+  const [text, setText] = useState("สวัสดีครับ, ยินดีต้อนรับ");
   const [public_relations, setPublic_relations] = useState<Publics[]>([])
   const [tripsData, setTripsData] = useState<TripsProps[]>([]);
 
@@ -111,7 +110,7 @@ const Home = () => {
   const [notification, setNotification] = useState<any>(false);
   const notificationListener = useRef<Notifications.Subscription | undefined>();
   const responseListener = useRef<Notifications.Subscription | undefined>();
-
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token: any) => setExpoPushToken(token));
@@ -151,39 +150,37 @@ const Home = () => {
 
 
   useEffect(() => {
-    const fetchTripsData = async () => {
-      try {
-
-        const queryTrips = await fetchTripsDataQuery()
-
-        setTripsData(queryTrips as unknown as TripsProps[]);
-      } catch (error) {
-        console.log('Error getting trips data:', error);
-      }
-    };
-
-    fetchTripsData();
-  }, []);
-
-
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const public_relation = await fetchPublic_RelationsData();
-
-        setPublic_relations(public_relation as unknown as Publics[])
-      } catch (error) {
-        console.log(error)
-      }
-    }
     fetchData()
   }, []);
 
 
+  const fetchData = async () => {
+    try {
+      setIsRefreshing(true);
+      const public_relation = await fetchPublic_RelationsData();
+      const queryTrips = await fetchTripsDataQuery()
+
+      setTripsData(queryTrips as unknown as TripsProps[]);
+      setPublic_relations(public_relation as unknown as Publics[])
+      setIsRefreshing(false);
+    } catch (error) {
+      console.log('Error gettinu data:', error);
+    }
+  }
+
+
+
+
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={fetchData}
+          />
+        }
+        showsVerticalScrollIndicator={false}>
         <ImageBackground
           source={{
             uri: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.hdnicewallpapers.com%2FWalls%2FBig%2FVehicles%2FBoat_on_Blue_Sea_4K_Wallpaper.jpg&f=1&nofb=1&ipt=25f5abcf1d94032e6075a884c2149139cecd2fdd6bb72290fa386a45b566b15a&ipo=images",
@@ -201,7 +198,7 @@ const Home = () => {
 
         <CategoryHeader />
 
-
+        <View  style={{marginTop: SPACING.m}}/>
         <SectionHeader
           title="โปรโมชั่น"
           buttonTitle=""

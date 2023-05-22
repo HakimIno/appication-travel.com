@@ -1,6 +1,7 @@
 import {
   Image,
   ImageBackground,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -17,10 +18,8 @@ import * as Facebook from "expo-facebook";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import {
-  getAuth,
   signInWithCredential,
   FacebookAuthProvider,
-  onAuthStateChanged,
 } from "@firebase/auth";
 
 import { auth } from "../config/config";
@@ -53,15 +52,21 @@ export const LoginScreen = ({ navigation }: Props) => {
 
   const signInFacebook = async () => {
     try {
+
+      const appId = '808694957342165';
+      const appName = 'travel.com';
+
       await Facebook.initializeAsync({
-        appId: "808694957342165"
+        appId: appId || undefined,
+        appName: appName || undefined,
       });
 
       const result = await Facebook.logInWithReadPermissionsAsync({
-        permissions: ["public_profile", "email"],
+        permissions: ["public_profile"],
       });
 
       if (result.type === "success") {
+        console.log(result.token)
         const credential = FacebookAuthProvider.credential(result.token);
         const userCredentials = await signInWithCredential(auth, credential);
         userCredentials.user?.getIdToken();
@@ -76,6 +81,10 @@ export const LoginScreen = ({ navigation }: Props) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>
+      <StatusBar
+        backgroundColor="#ffffff" 
+        barStyle="dark-content" 
+        translucent />
       <View style={styles.headerClose}></View>
       <View style={styles.headerContainer}>
         <Image source={images.LogoApp} style={{ width: 250, height: 150 }} />
@@ -84,15 +93,6 @@ export const LoginScreen = ({ navigation }: Props) => {
         </Text>
 
         <View style={styles.loginContainer}>
-          {/* Google Login */}
-          <View style={[styles.googleContainer, styles.shadowProp]}>
-            <Image
-              source={images.googlePng}
-              style={{ width: 30, height: 30 }}
-            />
-            <Text style={styles.googleText}>เข้าระบบผ่าน Google</Text>
-          </View>
-          <View style={{ marginVertical: 4 }} />
           {/* Facebook Login */}
           <TouchableOpacity
             style={[styles.facebookContainer, styles.shadowProp]}

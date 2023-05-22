@@ -17,9 +17,11 @@ import Divider from "../components/shared/divider";
 import CustomBackground from "../components/trip-details/TripDetailsCard/custom-background";
 import HeaderBooking from "../components/booking/header/header-booking";
 import PdfPrint from "../components/booking/pdf-print";
-import { collection, doc, getDocs, setDoc } from "firebase/firestore";
-import { db } from "../config/config";
+import { addDoc, collection, doc, getDocs, setDoc } from "firebase/firestore";
+import { auth, db } from "../config/config";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { calculateDuration, generateRandomID, numberWithCommas } from "../utils/utils";
+import PdfPrintHotels from "../components/booking/pdf-print-hotels";
 
 type BookingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -28,9 +30,12 @@ type BookingScreenNavigationProp = StackNavigationProp<
 
 const BookingInformationScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, "BookingInformation">>();
-  const { title, price, bookingDate, adults, children, tripsId, hotelsId } = route.params;
+  const { title, price, bookingDate, adults, children, tripsId, hotelsId, types, image, checkInDate, checkOutDate, selectRoom } = route.params;
+
 
   const navigation = useNavigation<BookingScreenNavigationProp>()
+
+  const duration = calculateDuration(checkInDate, checkOutDate)
 
   const [isShowPDF, setIsShowPDF] = useState(false);
 
@@ -99,47 +104,100 @@ const BookingInformationScreen = () => {
   );
 
 
+
   const handleBooking = async () => {
     const ordersCollectionRef = collection(db, 'orders');
     const querySnapshot = await getDocs(ordersCollectionRef);
 
     const orders = querySnapshot.docs.map((doc) => doc.data());
 
-    const order_booking = {
-      id: orders.length + 1,
-      title: title,
-      fistname: newFirstName,
-      lastname: newLastName,
-      phonnumber: newPhoneNumber,
-      email: newEmail,
-      date: bookingDate,
-      price: price,
-      adults: adults,
-      children: children,
-      status: 'รอชำระเงิน'
-    };
+    const currentUser = auth.currentUser;
+    const userId = currentUser?.uid;
 
-    await setDoc(doc(db, "orders", `orders-ID-${orders.length + 1}`), order_booking)
+    if (tripsId) {
+      const order_booking = {
+        orderID: `LMF-${generateRandomID(8)}`,
+        usersId: userId,
+        tripsId: tripsId,
+        title: title,
+        fistname: newFirstName,
+        lastname: newLastName,
+        image: image,
+        phonnumber: newPhoneNumber,
+        email: newEmail,
+        sleep_checkout: "",
+        date: bookingDate,
+        price: price,
+        adults: adults,
+        children: children,
+        checkInDate: "",
+        checkOutDate: "",
+        selectRoom: "",
+        status: 'InProgress',
+        type: types
+      };
 
-    navigation.navigate('ReviewInput', { tripsId: tripsId, title: title, hotelsId: hotelsId })
+      await addDoc(collection(db, "orders"), order_booking)
+
+    } else {
+      const order_booking = {
+        orderID: `LHF-${generateRandomID(8)}`,
+        usersId: userId,
+        hotelsId: hotelsId,
+        title: title,
+        fistname: newFirstName,
+        lastname: newLastName,
+        image: image,
+        phonnumber: newPhoneNumber,
+        email: newEmail,
+        sleep_checkout: "",
+        checkInDate: checkInDate,
+        checkOutDate: checkOutDate,
+        selectRoom: selectRoom,
+        date: checkInDate,
+        price: price,
+        adults: "",
+        children: "",
+        status: 'InProgress',
+        type: types
+      };
+      await addDoc(collection(db, "orders"), order_booking)
+    }
+
+    //await setDoc(doc(db, "orders", ''), order_booking)
+
+    //navigation.navigate('ReviewInput', { tripsId: tripsId, title: title, hotelsId: hotelsId })
   }
-  
+
   return (
     <View style={styles.container}>
       <ScrollView>
         <View style={styles.detailContainer}>
           <View style={{ marginHorizontal: SPACING.l }}>
-            <HeaderBooking title="ข้อมูลแพคเกจ" />
+            <HeaderBooking title={`ข้อมูลแพคเกจ ${types === "PLACE" ? "ทัวร์" : "โรงแรม"}`} />
             <Text numberOfLines={2} style={styles.detailTextTitle}>
               {title}
             </Text>
-            <Text style={styles.detailTextSubTitle}>{bookingDate}</Text>
-            {adults !== "" ? (
-              <Text style={styles.detailTextSubTitle}>ผู้ใหญ่ x {adults}</Text>
-            ) : null}
-            {children !== "" ? (
-              <Text style={styles.detailTextSubTitle}>เด็ก x {children}</Text>
-            ) : null}
+            {tripsId ? (
+              <>
+                <Text style={styles.detailTextSubTitle}>{bookingDate}</Text>
+                {adults !== "" ? (
+                  <Text style={styles.detailTextSubTitle}>ผู้ใหญ่ x {adults}</Text>
+                ) : null}
+                {children !== "" ? (
+                  <Text style={styles.detailTextSubTitle}>เด็ก x {children}</Text>
+                ) : null}
+              </>
+
+            ) : (
+              <>
+                <Text style={styles.detailTextSubTitle}>เช็คอินวันที่: {checkInDate}</Text>
+                <Text style={styles.detailTextSubTitle}>เช็คเอาท์วันที่: {checkOutDate}</Text>
+                <Text style={styles.detailTextSubTitle}>ระยะเวลาเข้าพัก: {duration.durationInDays} วัน {duration.durationInNights} คืน</Text>
+
+                <Text style={styles.detailTextSubTitle}>ประเภทห้อง: {selectRoom}</Text>
+              </>
+            )}
 
             <Text style={styles.priceText}>฿ {price}</Text>
           </View>
@@ -192,17 +250,33 @@ const BookingInformationScreen = () => {
                 </TouchableOpacity>
               ) : null}
               {isShowPDF && (
-                <PdfPrint
-                  tirpname={title}
-                  fistname={newFirstName}
-                  lastname={newLastName}
-                  phonnumber={newPhoneNumber}
-                  email={newEmail}
-                  date={bookingDate}
-                  price={price}
-                  adults={adults}
-                  children={children}
-                />
+                <>
+                  {tripsId ? (
+                    <PdfPrint
+                      tirpname={title}
+                      fistname={newFirstName}
+                      lastname={newLastName}
+                      phonnumber={newPhoneNumber}
+                      email={newEmail}
+                      date={bookingDate}
+                      price={numberWithCommas(price)}
+                      adults={adults}
+                      children={children}
+                    />
+                  ) : (
+                    <PdfPrintHotels
+                      hotelsName={title}
+                      fistname={newFirstName}
+                      lastname={newLastName}
+                      phonnumber={newPhoneNumber}
+                      email={newEmail}
+                      checkInDate={checkInDate}
+                      checkOutDate={checkOutDate}
+                      selectRoom={selectRoom}
+                      price={numberWithCommas(price)}
+                    />
+                  )}
+                </>
               )}
             </View>
 

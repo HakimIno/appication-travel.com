@@ -1,5 +1,5 @@
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../config/config";
+import { auth, db } from "../config/config";
 
 export const fetchNotificationData = async () => {
     try {
@@ -60,10 +60,7 @@ export const fetchTripsDataQuery = async () => {
 
         const trips = await Promise.all(
             tripsQuerySnapshot.docs.map(async (doc) => {
-
                 const tripId = doc.id;
-
-
                 const reviewsRef = collection(db, 'reviews');
                 const q = query(reviewsRef, where('tripsId', '==', tripId));
                 const reviewsQuerySnapshot = await getDocs(q);
@@ -71,6 +68,7 @@ export const fetchTripsDataQuery = async () => {
                 const hotelsRef = collection(db, 'hotels');
                 const h = query(hotelsRef, where('tripsId', '==', tripId));
                 const hotelsQuerySnapshot = await getDocs(h);
+
 
                 const reviewsData = reviewsQuerySnapshot.docs.map((reviewDoc) => ({
                     id: reviewDoc.id,
@@ -95,6 +93,7 @@ export const fetchTripsDataQuery = async () => {
                     ...doc.data(),
                     hotels: hotelsData,
                     reviews: reviewsData,
+
                 };
             })
         );
@@ -129,5 +128,192 @@ export const fetchHotelsDataQuery = async () => {
         return hotels;
     } catch (error) {
         console.log('Error getting trips data:', error);
+    }
+};
+
+export const fetchOrdersDataInProgress = async () => {
+    try {
+        const currentUser = auth.currentUser;
+        const userId = currentUser?.uid;
+
+        const ordersCollectionRef = collection(db, 'orders');
+        const q = query(ordersCollectionRef, where('usersId', '==', userId), where('status', '==', 'InProgress'));
+        const querySnapshot = await getDocs(q);
+
+        const ordersData = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        return ordersData;
+    } catch (error) {
+        console.log('Error getting users data:', error);
+    }
+};
+
+export const fetchOrdersDataSuccess = async () => {
+    try {
+        const currentUser = auth.currentUser;
+        const userId = currentUser?.uid;
+
+        const ordersCollectionRef = collection(db, 'orders');
+
+        const q = query(
+            ordersCollectionRef,
+            where('usersId', '==', userId),
+            where('status', '==', 'Success')
+        );
+        const querySnapshot = await getDocs(q);
+
+        const ordersData = await Promise.all(
+            querySnapshot.docs.map(async (doc) => {
+                const orderId = doc.id;
+                const orderData = doc.data();
+
+                const ReviewsCollectionRef = collection(db, 'reviews');
+                const reviewQuerySnapshot = await getDocs(
+                    query(
+                        ReviewsCollectionRef,
+                        where('usersId', '==', userId),
+                        where('orderId', '==', orderId)
+                    )
+                );
+                const reviewExists = !reviewQuerySnapshot.empty;
+
+                return {
+                    id: orderId,
+                    ...orderData,
+                    reviewExists,
+                };
+            })
+        );
+
+        return ordersData;
+    } catch (error) {
+        console.log('Error getting order data:', error);
+    }
+};
+
+
+export const fetchOrdersDataFailed = async () => {
+    try {
+
+        const currentUser = auth.currentUser;
+        const userId = currentUser?.uid;
+
+        const ordersCollectionRef = collection(db, 'orders');
+        const q = query(ordersCollectionRef, where('usersId', '==', userId), where('status', '==', 'Failed'));
+        const querySnapshot = await getDocs(q);
+
+        const ordersData = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        return ordersData;
+    } catch (error) {
+        console.log('Error getting users data:', error);
+    }
+};
+
+interface FavoriteTrip {
+    id: string;
+    tripId: string;
+}
+
+interface FavoriteHotels {
+    id: string;
+    hotelsId: string;
+}
+
+export const fetchFavorites = async () => {
+    try {
+        const currentUser = auth.currentUser;
+        const userId = currentUser?.uid;
+
+        const favoritesCollectionRef = collection(db, 'favorites');
+        const q = query(favoritesCollectionRef, where('userId', '==', userId));
+        const querySnapshot = await getDocs(q);
+
+        const favoritesTripId: FavoriteTrip[] = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            tripId: doc.data().tripId,
+        }));
+
+        const tripCollectionRef = collection(db, 'trips');
+        const queryTripsSnapshot = await getDocs(tripCollectionRef);
+
+        const reviewsRef = collection(db, 'reviews');
+
+        const foundTripsData = await Promise.all(
+            favoritesTripId.map(async (favorite) => {
+                const foundTrip = queryTripsSnapshot.docs.find((trip) => trip.id === favorite.tripId);
+
+                const r = query(reviewsRef, where('tripsId', '==', favorite.tripId));
+                const reviewsQuerySnapshot = await getDocs(r);
+
+                const reviewsData = reviewsQuerySnapshot.docs.map((reviewDoc) => ({
+                    id: reviewDoc.id,
+                    ...reviewDoc.data(),
+                }));
+
+                return {
+                    id: favorite.id,
+                    tripsId: foundTrip?.id,
+                    reviews: reviewsData,
+                    ...(foundTrip?.data() || {}),
+                };
+            })
+        );
+
+        return foundTripsData;
+    } catch (error) {
+        console.log('Error getting users data:', error);
+    }
+};
+
+
+export const fetchFavoritesHotels = async () => {
+    try {
+        const currentUser = auth.currentUser;
+        const userId = currentUser?.uid;
+
+        const favoritesCollectionRef = collection(db, 'favorites_hotels');
+        const q = query(favoritesCollectionRef, where('userId', '==', userId));
+        const querySnapshot = await getDocs(q);
+
+        const favoritesHotelsId: FavoriteHotels[] = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            hotelsId: doc.data().hotelsId,
+        }));
+
+        const hotelsCollectionRef = collection(db, 'hotels');
+        const queryHotelsSnapshot = await getDocs(hotelsCollectionRef);
+
+        const foundHotelsData = await Promise.all(
+            favoritesHotelsId.map(async (favorite) => {
+                const foundHotel = queryHotelsSnapshot.docs.find((hotel) => hotel.id === favorite.hotelsId);
+
+                const reviewsRef = collection(db, 'reviews');
+                const r = query(reviewsRef, where('hotelsId', '==', favorite.hotelsId));
+                const reviewsQuerySnapshot = await getDocs(r);
+
+                const reviewsData = reviewsQuerySnapshot.docs.map((reviewDoc) => ({
+                    id: reviewDoc.id,
+                    ...reviewDoc.data(),
+                }));
+
+                return {
+                    id: favorite.id,
+                    hotelsId: foundHotel?.id,
+                    reviews: reviewsData,
+                    ...(foundHotel?.data() || {}),
+                };
+            })
+        );
+
+        return foundHotelsData;
+    } catch (error) {
+        console.log('Error getting users data:', error);
     }
 };

@@ -12,13 +12,15 @@ import {
   BottomTabBar,
 } from "@react-navigation/bottom-tabs";
 
-import { Home, Transaction } from "../screens";
+import { Home } from "../screens";
 import { COLORS, FONTS, SIZES, icons } from "../constants";
 import SearchScreen from "../screens/search-screen";
 import { Ionicons } from "@expo/vector-icons";
 import SettingsScreen from "../screens/accouct-screen";
 import { createStackNavigator } from "@react-navigation/stack";
 import { RootStackParamList } from "../types";
+import StatusBookingScreen from "../screens/status-booking-screen";
+import { SPACING } from "../constants/theme";
 
 const Tab = createBottomTabNavigator();
 
@@ -101,6 +103,7 @@ const Tabs = () => {
         name="Search"
         component={SearchScreen}
         options={{
+
           tabBarIcon: ({ focused }) => (
             <View style={{ alignItems: "center", justifyContent: "center" }}>
               <Ionicons
@@ -117,6 +120,41 @@ const Tabs = () => {
                 }}
               >
                 ค้นหา
+              </Text>
+            </View>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="StatusBooking"
+        component={StatusBookingScreen}
+        options={{
+          title: "ประวัติคำสั่งซื้อ",
+          headerShown: true,
+          headerTitleStyle: {
+            fontSize: 15,
+            color: COLORS.black,
+            fontFamily: "SukhumvitSet-Bold",
+          },
+          tabBarIcon: ({ focused }) => (
+            <View style={{ alignItems: "center", justifyContent: "center" }}>
+              <Image
+                source={icons.suitcase}
+                resizeMode="contain"
+                style={{
+                  height: 30,
+                  tintColor: focused ? COLORS.primary : COLORS.lightGray1,
+                }}
+              />
+              <Text
+                style={{
+                  color: focused ? COLORS.primary : COLORS.lightGray1,
+                  fontSize: 9,
+                  fontWeight: "700",
+                  fontFamily: "SF-font",
+                }}
+              >
+                การจอง
               </Text>
             </View>
           ),

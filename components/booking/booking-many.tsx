@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import React, { useState } from "react";
-import { SPACING } from "../../constants/theme";
+import { COLORS, SPACING } from "../../constants/theme";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Pressable } from "react-native";
 
@@ -17,6 +17,8 @@ type Props = {
   children: any;
   setChildren: any;
   activeIndex: any;
+  price: any
+  childrenPrice: any
 };
 
 const BookingMany = ({
@@ -25,6 +27,8 @@ const BookingMany = ({
   children,
   setChildren,
   activeIndex,
+  price,
+  childrenPrice
 }: Props) => {
   const [modalVisible, setModalVisible] = useState(false);
   return (
@@ -51,7 +55,7 @@ const BookingMany = ({
           ]}
         >
           <Text style={[styles.detailsBookingText, { fontSize: 12 }]}>
-            ผู้ใหญ่
+            ผู้ใหญ่ <Text style={{ fontSize: 10, color: COLORS.primary}}>({price}฿)</Text>
           </Text>
           <View style={[styles.containerFdRow]}>
             <TouchableOpacity
@@ -108,7 +112,7 @@ const BookingMany = ({
           ]}
         >
           <Text style={[styles.detailsBookingText, { fontSize: 12 }]}>
-            เด็ก
+            เด็ก <Text style={{ fontSize: 10, color: COLORS.primary}}>({childrenPrice}฿)</Text>
           </Text>
           <View style={[styles.containerFdRow]}>
             <TouchableOpacity

@@ -12,11 +12,27 @@ import { RootStackParamList } from "../types";
 import FavoriteButton from "../components/shared/favorite-button";
 import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
+import { useEffect, useState } from "react";
+import { addDoc, collection, deleteDoc, doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { auth, db } from "../config/config";
+import { fetchFavorites } from "../api/fecth.api";
+
+
 
 type TripDetailsScreenNavigationProp = NavigationProp<
   RootStackParamList,
   "TripDetails"
 >;
+
+interface Favorites {
+  id: string;
+  tripsId: string;
+  location: string;
+  title: string;
+  image: string;
+  price: string;
+  type: string
+}
 
 const TripDetailsScreen = () => {
 
@@ -26,7 +42,26 @@ const TripDetailsScreen = () => {
   const { trip } = route.params;
   const slides = [trip.image, ...trip.gallery];
 
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [favoritesData, setFavoritesData] = useState<Favorites[]>([])
 
+
+
+  useEffect(() => {
+    fetchData();
+    const unsubscribe = onSnapshot(collection(db, 'favorites'), fetchData);
+    return () => unsubscribe();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const favorite = await fetchFavorites();
+      setFavoritesData(favorite as unknown as Favorites[]);
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
+  //
 
   const handleShare = async ({ imageUrl, title }: { imageUrl: string; title: string }) => {
     try {
@@ -39,7 +74,35 @@ const TripDetailsScreen = () => {
       console.log('Error sharing', error);
     }
   };
+  const isFavorites = favoritesData.filter((s) => s.tripsId === trip.tripsId)?.length > 0
 
+  const favoriteId = favoritesData.find((f) => f.tripsId === trip.tripsId ? f.id : '')
+
+  const addFavorite = async (tripId: string) => {
+    try {
+      const currentUser = auth.currentUser;
+      const userId = currentUser?.uid;
+
+      await addDoc(collection(db, "favorites"), {
+        tripId: tripId,
+        userId: userId
+      })
+
+    } catch (error) {
+      console.error('Error adding favorite:', error);
+    }
+  };
+
+  const removeFavorite = async (favoriteId: string | undefined) => {
+    try {
+      if (favoriteId) {
+        const favoriteDocRef = doc(db, 'favorites', favoriteId);
+        await deleteDoc(favoriteDocRef);
+      }
+    } catch (error) {
+      console.error('Error adding favorite:', error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -60,8 +123,11 @@ const TripDetailsScreen = () => {
         duration={400}
         easing="ease-in-out"
       >
-        <FavoriteButton onPress={() => { }} />
-        <View style={{ marginHorizontal: 3 }} />
+        <FavoriteButton
+          onPress={() => isFavorites ? removeFavorite(favoriteId?.id) : addFavorite(trip.tripsId)}
+          isFavorites={isFavorites} />
+        <View style={{ marginHorizontal: 3 }}
+        />
         <TouchableOpacity style={[styles.view]} onPress={() => handleShare({ imageUrl: trip.image, title: trip.title })}>
           <Octicons name="share" size={20} color={COLORS.black} />
         </TouchableOpacity>

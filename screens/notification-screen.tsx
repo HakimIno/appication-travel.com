@@ -1,9 +1,11 @@
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { COLORS, images } from '../constants'
-import { SPACING } from '../constants/theme';
+import { SIZES, SPACING } from '../constants/theme';
 import Divider from '../components/shared/divider';
 import { fetchNotificationData } from '../api/fecth.api';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../types';
 
 interface NotificationProps {
     id: number;
@@ -12,7 +14,12 @@ interface NotificationProps {
     date: string
 }
 
-const NotificationScreen = () => {
+
+type NavigationProps = {
+    navigation: StackNavigationProp<RootStackParamList>;
+};
+
+const NotificationScreen = ({ navigation }: NavigationProps) => {
 
     const [notification, setNotification] = useState<NotificationProps[]>([])
 
@@ -35,7 +42,7 @@ const NotificationScreen = () => {
 
         return (
             <>
-                <TouchableOpacity style={styles.listContainer} >
+                <TouchableOpacity style={styles.listContainer} onPress={() => navigation.navigate('NotificationDetails', { notification: item })}>
                     <View >
                         <Image
                             source={images.LogoNotify}
@@ -44,13 +51,13 @@ const NotificationScreen = () => {
 
                         <View style={styles.notify} />
                     </View>
-                    <View style={{ marginHorizontal: SPACING.s, width: 250 }}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <View>
+                    <View style={{ marginHorizontal: SPACING.s,}}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', }}>
+                            <View style={{ width: SIZES.width - 150 }}>
                                 <Text numberOfLines={1} style={[styles.fontTextBold, { fontSize: 13, }]}>{item.title}</Text>
-                                <Text numberOfLines={2} style={[styles.fontText, { fontSize: 11, color: COLORS.slate }]}>{item.description}</Text>
+                                <Text numberOfLines={1} style={[styles.fontText, { fontSize: 11, color: COLORS.slate }]}>{item.description}</Text>
                             </View>
-                            <Text style={[styles.fontText, { fontSize: 11, marginHorizontal: SPACING.m, color: COLORS.slate }]}>{item.date}</Text>
+                            <Text style={[styles.fontText, { fontSize: 11, color: COLORS.slate }]}>{item.date}</Text>
                         </View>
                     </View>
                 </TouchableOpacity>

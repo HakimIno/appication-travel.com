@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginLeft: SPACING.l,
     marginRight: SPACING.m,
-    marginTop: SPACING.l,
+   
 
   },
   title: {

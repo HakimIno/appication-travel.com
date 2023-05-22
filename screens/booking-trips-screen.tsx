@@ -35,7 +35,7 @@ type BookingTripsScreenNavigationProp = NavigationProp<
 const BookingTripScreen = () => {
   const navigation = useNavigation<BookingTripsScreenNavigationProp>();
   const route = useRoute<RouteProp<RootStackParamList, "BookingTrips">>();
-  const { title, price, tripsId, hotelsId } = route.params;
+  const { title, price, tripsId, hotelsId, types, image, childrenPrice } = route.params;
 
   const details = ["ยกเลิกฟรี (ล่วงหน้า 24 ชั่วโมง)", "ยืนยัน"];
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -84,7 +84,7 @@ const BookingTripScreen = () => {
     bottomSheetRef.current?.snapToIndex(1);
   };
 
-  const prices = numberWithCommas(parseFloat(price) * (adults + children));
+  const prices = numberWithCommas((parseFloat(price) * adults) + (parseFloat(childrenPrice) * children));
 
   return (
     <View style={styles.container}>
@@ -221,6 +221,8 @@ const BookingTripScreen = () => {
           children={children}
           setChildren={setChildren}
           activeIndex={activeIndex}
+          price={numberWithCommas(price)}
+          childrenPrice={numberWithCommas(childrenPrice)}
         />
 
         <View
@@ -228,16 +230,18 @@ const BookingTripScreen = () => {
             marginVertical: Display.setHeight(5),
           }}
         >
-          <Text
-            style={{
-              color: "black",
-              fontSize: 14,
-              fontWeight: "bold",
-              marginVertical: 10,
-            }}
-          >
-            ฿ {prices}
-          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text
+              style={{
+                color: "black",
+                fontSize: 13,
+                fontWeight: "bold",
+                marginVertical: 10,
+              }}
+            >
+              รวม {prices} ฿
+            </Text>
+          </View>
           <TouchableOpacity
             style={{
               alignItems: "center",
@@ -251,10 +255,12 @@ const BookingTripScreen = () => {
                   tripsId: tripsId,
                   hotelsId: hotelsId,
                   title: title,
+                  image: image,
                   price: prices,
                   adults: adults,
                   children: children,
                   bookingDate: activeIndex,
+                  types: types
                 });
               }
             }}

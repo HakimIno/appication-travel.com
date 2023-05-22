@@ -6,7 +6,7 @@ import { RefObject } from "react";
 
 type Props = {
   style?: any;
-  enabledSpacing: boolean;
+  enabledSpacing?: boolean;
   elevations?: boolean;
 };
 

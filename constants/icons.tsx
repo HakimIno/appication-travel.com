@@ -12,6 +12,7 @@ const message = require("../assets/icons/icons8-message-64.png");
 const hotelIcon = "https://img.icons8.com/external-wanicon-lineal-color-wanicon/64/external-hotel-beach-wanicon-lineal-color-wanicon.png"
 const hotel = require("../assets/icons/icons8-downtown-64.png");
 const tripsIcon = "https://img.icons8.com/color/96/hot-air-balloon.png"
+const suitcase = require('../assets/icons/icons8-suitcase-64.png')
 
 export default {
   back_arrow,
@@ -27,5 +28,6 @@ export default {
   message,
   hotelIcon,
   hotel,
-  tripsIcon
+  tripsIcon,
+  suitcase
 };

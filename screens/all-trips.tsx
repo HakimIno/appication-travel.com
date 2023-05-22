@@ -52,16 +52,16 @@ const AllTrips = () => {
     <View style={styles.container}>
       <View
         style={{
-          marginTop: insets.top,
+         
           flexDirection: "row",
           alignItems: "center",
         }}
       >
         <HeaderBack onPress={() => navigation.goBack()} />
-        <Text style={{ fontSize: 16, fontFamily: "SukhumvitSet-Bold", }}>{type}</Text>
+        <Text style={{ fontSize: 16, fontFamily: "SukhumvitSet-Bold", marginTop: SPACING.m}}>{type}</Text>
       </View>
       <Divider enabledSpacing={false} />
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 , marginTop: SPACING.s}}>
         <SearchMasonry
           key="all"
           list={

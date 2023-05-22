@@ -34,6 +34,7 @@ import Reviews from "../../reviews/reviews";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../../types";
 import TripBookingBottom from "../../trip-details/trip-booking-bottom";
+import { numberWithCommas } from "../../../utils/utils";
 
 type Props = {
   hotel: any;
@@ -141,7 +142,7 @@ const HotelDetailsCard = ({ hotel }: Props) => {
     const url = map;
     Linking.openURL(url);
   };
-  
+
   return (
     <>
       <BottomSheet
@@ -191,7 +192,7 @@ const HotelDetailsCard = ({ hotel }: Props) => {
                 ]}
                 numberOfLines={1}
               >
-                {hotel.location}
+                {hotel.title}
               </Text>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <FontAwesome5
@@ -227,10 +228,12 @@ const HotelDetailsCard = ({ hotel }: Props) => {
               <Text style={styles.summaryText}>{hotel.description}</Text>
             </View>
 
+    
+
             <SectionHeader
               title={`รีวิว (${hotel.reviews.length})`}
               containerStyle={styles.sectionHeader}
-              titleStyle={styles.sectionTitle}
+             
               onPress={() => { }}
               buttonTitle=""
             />
@@ -257,21 +260,26 @@ const HotelDetailsCard = ({ hotel }: Props) => {
             ) : null}
           </Animated.View>
         </BottomSheetScrollView>
+
+        <Animated.View style={[{ backgroundColor: "white", height: 50 }, bottomStyle]}>
+          <TripBookingBottom
+            title="เลือกห้องพัก"
+            price={numberWithCommas(hotel.pricePeerDay)}
+            onPress={() =>
+              navigation.navigate("BookingHotels", {
+                title: hotel.title,
+                hotelsId: hotel.hotelsId,
+                image: hotel.image,
+                price: hotel.pricePeerDay,
+                option_room: hotel.option_room,
+                types: hotel.type
+              })
+            }
+          />
+        </Animated.View>
       </BottomSheet>
 
-      <Animated.View style={[{ backgroundColor: "white" }, bottomStyle]}>
-        <TripBookingBottom
-          title="จองตอนนี้"
-          price="200"
-          onPress={() =>
-            navigation.navigate("BookingTrips", {
-              title: hotel.title,
-              hotelsId: hotel.hotelsId,
-              price: hotel.pricePeerDay,
-            })
-          }
-        />
-      </Animated.View>
+
     </>
   );
 };

@@ -21,7 +21,7 @@ const MainHeader = () => {
     <View style={[styles.container, { marginTop: insets.top }]}>
       <View></View>
       <Text style={styles.title}>
-        travel<Text style={{ color: COLORS.yellow }}>.</Text>com
+        Aumanan<Text style={{ color: COLORS.yellow }}>•</Text>Juket
       </Text>
 
       <TouchableOpacity onPress={() => navigation.navigate("Notification")}>

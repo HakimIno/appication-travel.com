@@ -3,13 +3,14 @@
     "name": "travel-app",
     "slug": "travel-app",
     "version": "1.0.0",
+    "splash":{
+      "image": "./assets/images/splash/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/images/splash/loading_gif_Imgur.gif",
-      "resizeMode": "cover"
-    },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -29,7 +30,7 @@
     },
     "android": {
       "googleServicesFile": "./google-services.json",
-      "useNextNotificationsApi":true,
+      "useNextNotificationsApi": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -55,15 +56,30 @@
     },
     "runtimeVersion": "1.0.0",
     "scheme": [
-      "travel-app",
-      "fb808694957342165"
+      {
+        "appName": "travel-app"
+      },
+      {
+        "appId": "fb808694957342165"
+      }
     ],
+    "facebook": {
+      "appId": "808694957342165"
+    },
     "owner": "kimsnow33",
     "plugins": [
       [
         "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ],
+      [
+        "expo-facebook",{
+          "appID": "808694957342165",
+          "appName": "travel.com",
+          "clientToken": "33eb981e19a83e12a33302b7125c96f9",
+          "userTrackingPermission": false
         }
       ]
     ],

@@ -237,15 +237,6 @@ const TripDetailsCard = ({ trip }: Props) => {
                   )))}
               </View>
             </View>
-            <SectionHeader
-              title="โรงแรม"
-              containerStyle={styles.sectionHeader}
-              titleStyle={styles.sectionTitle}
-              onPress={() => {}}
-              buttonTitle=""
-            />
-
-            <HotelsCarousel hotels={trip.hotels} />
 
             <SectionHeader
               title={`รีวิว (${trip.reviews.length})`}
@@ -255,7 +246,7 @@ const TripDetailsCard = ({ trip }: Props) => {
               buttonTitle=""
             />
             <RatingOverall
-              rating={trip.rating}
+              rating={Number(trip.rating)}
               containerStyle={styles.rating}
             />
             <Reviews reviews={trip.reviews.slice(0, 3)} />
@@ -287,6 +278,9 @@ const TripDetailsCard = ({ trip }: Props) => {
               title: trip.title,
               tripsId: trip.tripsId,
               price: trip.price,
+              childrenPrice: trip.childrenPrice,
+              image: trip.image,
+              types: trip.type
             })
           }
         />

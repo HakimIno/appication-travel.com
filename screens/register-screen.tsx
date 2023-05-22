@@ -12,7 +12,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types";
 import { useNavigation } from "@react-navigation/native";
 import { SIZES, SPACING } from "../constants/theme";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Octicons } from "@expo/vector-icons";
 import { auth, db } from '../config/config'
 import { createUserWithEmailAndPassword } from "@firebase/auth";
 import { doc, setDoc, getDoc, collection, getDocs } from "firebase/firestore";
@@ -21,6 +21,8 @@ type emailScreenProps = StackNavigationProp<RootStackParamList, "Register">;
 const RegisterScreen = () => {
   const navigation = useNavigation<emailScreenProps>();
 
+  const [showPassword, setShowPassword] = useState(true);
+  const [showEnterPassword, setShowEnterPassword] = useState(true);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -69,10 +71,7 @@ const RegisterScreen = () => {
         const usersCollectionRef = collection(db, 'users');
         const querySnapshot = await getDocs(usersCollectionRef);
 
-        const usersData = querySnapshot.docs.map((doc) => doc.data());
-
         setDoc(doc(db, "users", `${user?.uid}`), {
-          id: usersData.length + 1,
           firstName: firstName,
           lastName: lastName,
           phoneNumber: phoneNumber,
@@ -158,8 +157,6 @@ const RegisterScreen = () => {
         {!isEmailValid && (
           <Text style={styles.invalidText}>อีเมลนี้ไม่ถูกต้อง</Text>
         )}
-
-        <Text style={styles.invalidText}>{messageError}</Text>
         <View style={styles.spaceContainer} />
         <View style={[styles.containerInput, { alignItems: "center" }]}>
           <TextInput
@@ -186,7 +183,7 @@ const RegisterScreen = () => {
             keyboardType="default"
             placeholder="รหัสผ่าน"
             onChangeText={setPassword}
-
+            secureTextEntry={showPassword}
           />
           {password && (
             <Ionicons
@@ -196,6 +193,13 @@ const RegisterScreen = () => {
               onPress={() => setPassword("")}
             />
           )}
+          <View style={{ marginHorizontal: 3}} />
+          <Octicons
+            name={showPassword ? "eye-closed" : "eye"}
+            size={18}
+            color={COLORS.black}
+            onPress={() => setShowPassword(!showPassword)}
+          />
         </View>
 
         <View style={styles.spaceContainer} />
@@ -206,7 +210,7 @@ const RegisterScreen = () => {
             keyboardType="default"
             placeholder="ยืนยันรหัสผ่าน"
             onChangeText={setConfirmPassword}
-
+            secureTextEntry={showEnterPassword}
           />
           {confirmPassword && (
             <Ionicons
@@ -216,6 +220,13 @@ const RegisterScreen = () => {
               onPress={() => setConfirmPassword("")}
             />
           )}
+          <View style={{ marginHorizontal: 3}} />
+          <Octicons
+            name={showEnterPassword ? "eye-closed" : "eye"}
+            size={18}
+            color={COLORS.black}
+            onPress={() => setShowEnterPassword(!showEnterPassword)}
+          />
         </View>
         {!passwordsMatch && <Text style={styles.invalidText}>รหัสผ่านไม่ตรงกัน</Text>}
         {!isPasswordValid && messagePassword && messagePassword.length > 0 && (

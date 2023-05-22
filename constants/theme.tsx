@@ -9,7 +9,7 @@ export const COLORS = {
   green: "#37E39F",
   red: "#ef4444",
   gray: "#6A6A6A",
-  lightGray: "#dbdbdb",
+  lightGray: "#dddddd",
   lightGray1: "#9aa0b8",
   yellow: "#facc15",
   facebook: "#2563eb",
