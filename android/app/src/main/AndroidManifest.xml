@@ -35,11 +35,10 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="com.kimsnow33.travelapp"/>
-        <data android:scheme="fb808694957342165"/>
-        <data android:scheme="your-android.package"/>
-        <data android:scheme="travel-com"/>
-        <data android:scheme="exp+travel-app"/>
-        <data android:scheme="travel-app"/>
+        <data android:scheme="facebookLogin"/>
+        <data android:scheme="fb744636280696889"/>
+        <data android:scheme="com.kimsnow33.travelapp://expo-development-client/?url=http%3A%2F%2F192.168.1.156%3A8081"/>
+        <data android:scheme="https://com.kimsnow33.travelapp/expo-development-client/\?url\=http%3A%2F%2F192.168.1.156%3A8081Remove"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:exported="false"/>

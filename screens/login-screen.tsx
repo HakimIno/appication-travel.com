@@ -13,21 +13,21 @@ import { COLORS, FONTS, SIZES, images } from "../constants";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import { A } from "@expo/html-elements";
-import * as Facebook from "expo-facebook";
+import * as Facebook from "expo-auth-session/providers/facebook";
+import * as WebBrowser from "expo-web-browser";
 
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import {
   signInWithCredential,
   FacebookAuthProvider,
 } from "@firebase/auth";
 
-import { auth } from "../config/config";
+import { auth, db } from "../config/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useState } from "react";
 import { SPACING } from "../constants/theme";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 type Props = {
   navigation: any;
@@ -36,7 +36,7 @@ type Props = {
 WebBrowser.maybeCompleteAuthSession();
 
 export const LoginScreen = ({ navigation }: Props) => {
-  const [isLoading, setIsLoading] = useState(true);
+  /* const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((token) => {
@@ -53,12 +53,11 @@ export const LoginScreen = ({ navigation }: Props) => {
   const signInFacebook = async () => {
     try {
 
-      const appId = '808694957342165';
-      const appName = 'travel.com';
+      const appId = '744636280696889';
+     
 
       await Facebook.initializeAsync({
-        appId: appId || undefined,
-        appName: appName || undefined,
+        appId: appId || undefined
       });
 
       const result = await Facebook.logInWithReadPermissionsAsync({
@@ -77,13 +76,83 @@ export const LoginScreen = ({ navigation }: Props) => {
     } catch (error) {
       console.log("Error during Facebook login:", error);
     }
+  }; */
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((token) => {
+      if (token) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Root", }],
+        });
+      }
+    });
+    return unsubscribe;
+  }, []);
+
+  const [request, response, promptAsync] = Facebook.useAuthRequest({
+    clientId: "744636280696889",
+  });
+
+
+  useEffect(() => {
+    console.log(response)
+    if (response && response.type === "success" && response.authentication) {
+      (async () => {
+        const accessToken = response.authentication?.accessToken;
+        console.log(accessToken)
+        if (accessToken) {
+          const userInfoResponse = await fetch(
+            `https://graph.facebook.com/me?access_token=${accessToken}&fields=id,name,picture.type(large)`
+          );
+          const userInfo = await userInfoResponse.json();
+
+          const credential = FacebookAuthProvider.credential(accessToken);
+          await signInWithCredential(auth, credential).then(async (userCredential) => {
+            const users = userCredential.user;
+
+            const userDocRef = doc(db, "users", `${users?.uid}`);
+
+            const docSnapshot = await getDoc(userDocRef);
+
+            if (docSnapshot.exists()) {
+              console.log("User data already exists in Firestore.");
+            } else {
+              const profileUrl = userInfo.url || ""; // Handle undefined value
+              const nameArray = userInfo.name.split(" ") || "";
+              setDoc(userDocRef, {
+                profileUrl: profileUrl,
+                firstName: nameArray[0],
+                lastName: nameArray[1],
+                phoneNumber: "",
+                email: "",
+              })
+                .then(() => {
+                  console.log("User data stored successfully!");
+                })
+                .catch((error) => {
+                  console.error("Error storing user data: ", error);
+                });
+            }
+          });
+
+          console.log('Login Success!!');
+        }
+      })();
+    }
+  }, [response]);
+  
+  const handlePressAsync = async () => {
+    const result = await promptAsync();
+    console.log(result)
   };
+
 
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>
       <StatusBar
-        backgroundColor="#ffffff" 
-        barStyle="dark-content" 
+        backgroundColor="#ffffff"
+        barStyle="dark-content"
         translucent />
       <View style={styles.headerClose}></View>
       <View style={styles.headerContainer}>
@@ -96,7 +165,7 @@ export const LoginScreen = ({ navigation }: Props) => {
           {/* Facebook Login */}
           <TouchableOpacity
             style={[styles.facebookContainer, styles.shadowProp]}
-            onPress={signInFacebook}
+            onPress={handlePressAsync}
           >
             <MaterialIcons name="facebook" size={27} color={COLORS.white} />
             <Text style={styles.facebookText}>เข้าระบบผ่าน Facebook</Text>
@@ -138,12 +207,8 @@ export const LoginScreen = ({ navigation }: Props) => {
             style={[styles.registerContainer, styles.shadowProp]}
             onPress={() => navigation.navigate("EmailLogin")}
           >
-            <MaterialCommunityIcons
-              name="gmail"
-              size={24}
-              color={COLORS.white}
-            />
-            <Text style={styles.facebookText}>เข้าระบบ Email</Text>
+
+            <Text style={styles.facebookText}>เข้าสู่ระบบ</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -29,16 +29,16 @@ const BottomSheetSelectDay = ({
   toDate,
   setActiveIndex,
 }: Props) => {
-  let today = startOfToday();
 
   const handleClose = () => {
     bottomSheetRef.current?.snapToIndex(0);
   };
 
   const had = (p: any) => {
-    setDate(p);
-    const day = new Date(p);
-    const days = format(day, "dd MMM");
+    const dateString = p.replace(/\//g, '-');
+    const isoDateString = dateString + 'T00:00:00.000Z';
+    setDate(isoDateString);
+    const days = format(new Date(isoDateString), "dd MMM");
     setActiveIndex(days);
     handleClose();
   };

@@ -25,6 +25,8 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
+          <string>facebookLogin</string>
+          <string>fb744636280696889</string>
           <string>com.kimsnow33.travelapp</string>
         </array>
       </dict>

@@ -1,0 +1,29 @@
+const [request, response, promptAsync] = Facebook.useAuthRequest({
+    clientId: "744636280696889",
+  });
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    if (response && response.type === "success" && response.authentication) {
+      (async () => {
+        const accessToken = response.authentication?.accessToken;
+        if (accessToken) {
+          const userInfoResponse = await fetch(
+            `https://graph.facebook.com/me?access_token=${accessToken}&fields=id,name,picture.type(large)`
+          );
+          const userInfo = await userInfoResponse.json();
+          setUser(userInfo);
+          console.log(JSON.stringify(response, null, 2));
+        }
+      })();
+    }
+  }, [response]);
+
+  const handlePressAsync = async () => {
+    const result = await promptAsync();
+    if (result.type !== "success") {
+      alert("Uh oh, something went wrong");
+      return;
+    }
+  };

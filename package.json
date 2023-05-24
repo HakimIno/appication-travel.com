@@ -26,7 +26,7 @@
     "@types/qrcode": "^1.5.0",
     "@types/react-native-modern-datepicker": "^1.0.1",
     "date-fns": "^2.29.3",
-    "expo": "^48.0.0",
+    "expo": "~48.0.15",
     "expo-auth-session": "~4.0.3",
     "expo-blur": "~12.2.2",
     "expo-constants": "~14.2.1",

@@ -41,24 +41,20 @@ const BookingTripScreen = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   const dates: string[] = [];
-  let today = startOfToday();
+  let today = new Date()
   const textDate = format(today, "dd MMM");
   let toDate = format(today, "yyyy/MM/dd");
-  const [date, setDate] = useState(toDate);
+  const dateString = toDate.replace(/\//g, '-');
+  const isoDateString = dateString + 'T00:00:00.000Z';
+  const [date, setDate] = useState(isoDateString);
   const [adults, setAdults] = useState(0);
   const [children, setChildren] = useState(0);
   const [activeIndex, setActiveIndex] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const day = new Date(date);
-  const days = format(day, "dd MMM");
+  const days = format(new Date(date), "dd MMM");
 
-
-  if (toDate === toDate) {
-    dates.push("พรุ่งนี้");
-  }
-
-  for (let i = 2; i < 8; i++) {
+  for (let i = 1; i < 8; i++) {
     const date = addDays(today, i);
     const dateString = format(date, "dd MMM");
     if (!dates.includes(dateString)) {
@@ -287,7 +283,7 @@ const BookingTripScreen = () => {
       </View>
       <BottomSheetSelectDay
         bottomSheetRef={bottomSheetRef}
-        date={date}
+        date=""
         setDate={setDate}
         toDate={toDate}
         setActiveIndex={setActiveIndex}
