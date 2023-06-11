@@ -8,8 +8,9 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { COLORS, SPACING } from "../../constants/theme";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Octicons } from "@expo/vector-icons";
 import { Pressable } from "react-native";
+import Display from "../../utils/Display";
 
 type Props = {
   adults: any;
@@ -19,6 +20,8 @@ type Props = {
   activeIndex: any;
   price: any
   childrenPrice: any
+  setPersonThree: any;
+  personThree: any
 };
 
 const BookingMany = ({
@@ -28,34 +31,64 @@ const BookingMany = ({
   setChildren,
   activeIndex,
   price,
-  childrenPrice
+  childrenPrice,
+
 }: Props) => {
   const [modalVisible, setModalVisible] = useState(false);
   return (
     <>
       <View
         style={{
-          paddingHorizontal: 10,
-          height: 100,
+          paddingHorizontal: Display.setWidth(2),
+          height: Display.setHeight(16),
           backgroundColor: "white",
           borderRadius: 10,
           borderWidth: 1,
           borderColor: "#dddcdc",
-          marginVertical: SPACING.l,
+          marginTop: SPACING.m,
         }}
       >
+        <View
+          style={{
+            flexDirection: "row",
+            margin: SPACING.s,
+            alignItems: "center",
+          }}
+        >
+          <Octicons name="person" size={15} color="#707070" />
+          <Text
+            style={[
+              styles.detailsBookingText,
+              {
+                marginLeft: SPACING.s / 2, color: "#707070",
+                fontSize: Display.setWidth(2.5),
+                fontFamily: "SukhumvitSet-SemiBold",
+              },
+            ]}
+          >
+            ผู้ใหญ่/เด็ก (บาท/ท่าน)
+          </Text>
+        </View>
+        <View
+          style={{
+            borderBottomWidth: 1,
+            borderStyle: "dashed",
+            borderColor: "#e2e2e2",
+          }}
+        />
+
         <View
           style={[
             styles.containerFdRow,
             {
               justifyContent: "space-between",
               marginHorizontal: SPACING.m,
-              paddingVertical: 10,
+              paddingVertical: Display.setHeight(1),
             },
           ]}
         >
           <Text style={[styles.detailsBookingText, { fontSize: 12 }]}>
-            ผู้ใหญ่ <Text style={{ fontSize: 10, color: COLORS.primary}}>({price}฿)</Text>
+            ผู้ใหญ่ <Text style={{ fontSize: 10, color: COLORS.primary }}>({price}฿)</Text>
           </Text>
           <View style={[styles.containerFdRow]}>
             <TouchableOpacity
@@ -94,25 +127,19 @@ const BookingMany = ({
             </TouchableOpacity>
           </View>
         </View>
-        <View
-          style={{
-            borderBottomWidth: 1,
-            borderStyle: "dashed",
-            borderColor: "#e2e2e2",
-          }}
-        />
+
         <View
           style={[
             styles.containerFdRow,
             {
               justifyContent: "space-between",
               marginHorizontal: SPACING.m,
-              paddingVertical: 10,
+              paddingVertical: Display.setHeight(1),
             },
           ]}
         >
           <Text style={[styles.detailsBookingText, { fontSize: 12 }]}>
-            เด็ก <Text style={{ fontSize: 10, color: COLORS.primary}}>({childrenPrice}฿)</Text>
+            เด็ก <Text style={{ fontSize: 10, color: COLORS.primary }}>({childrenPrice}฿)</Text>
           </Text>
           <View style={[styles.containerFdRow]}>
             <TouchableOpacity

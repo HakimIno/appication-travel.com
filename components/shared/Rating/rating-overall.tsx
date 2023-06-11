@@ -7,6 +7,7 @@ import { COLORS } from "../../../constants";
 import { SPACING } from "../../../constants/theme";
 import Rating from "./rating";
 import { getFractionDigitsRating } from "./utils";
+import Display from "../../../utils/Display";
 
 interface Props {
   rating: any;
@@ -32,8 +33,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   containerRating: {
-    width: 45,
-    height: 40,
+    width: Display.setWidth(15),
+    height: Display.setHeight(5),
     borderTopLeftRadius: 15,
     borderBottomRightRadius: 15,
     backgroundColor: COLORS.primary,
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
     marginRight: SPACING.s,
   },
   rating: {
-    fontSize: 20,
+    fontSize: Display.setWidth(5),
     color: COLORS.white,
     fontFamily: "SukhumvitSet-Bold",
     

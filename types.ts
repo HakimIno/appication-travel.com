@@ -5,6 +5,10 @@ type BookingTripsList = {
   image: any;
   price: any
   childrenPrice?: any;
+  hotelsName?: any
+  singleBadPrice?: any
+  doubleBedPrice?: any
+  threeBedsPrice?: any
   types?: any;
 
 }
@@ -28,6 +32,10 @@ type BookingInformationList = {
   checkInDate?: any;
   checkOutDate?: any;
   selectRoom?: any;
+  singleBad?: any;
+  doubleBed?: any;
+  threeBeds?: any;
+  hotelsName?: any;
   types?: any;
 }
 
@@ -60,8 +68,8 @@ export type RootStackParamList = {
   FullScreenImage: { imageUrl: any }
   StatusBooking: undefined;
   About: undefined;
-  NotificationDetails: { notification: any};
-  PromoDetails: { promotion: any}
+  NotificationDetails: { notification: any };
+  PromoDetails: { promotion: any }
 };
 
 

@@ -1,12 +1,19 @@
-import { Platform, StyleSheet, Text, View } from "react-native";
 
 import { useFonts } from "expo-font";
 import Navigators from "./navigators";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { NotificationProvider } from "./config/noty";
+import registerNNPushToken from "native-notify";
 
-export default function App() {
+
+function wrapClassInHook(Component: React.ComponentType<any>): React.ComponentType<any> {
+  return function WrappedComponent(props: any): JSX.Element {
+    registerNNPushToken(8562, 'c50yB7EcbMr6VOtSVF0qNb');
+    return <Component />;
+  };
+}
+
+const App = () => {
   const [fontsLoaded] = useFonts({
     "SF-font": require("./assets/fonts/SF-Pro-Rounded-Medium.otf"),
     "SukhumvitSet-Medium": require("./assets/fonts/SukhumvitSet-Medium.ttf"),
@@ -27,11 +34,4 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+export default wrapClassInHook(App)

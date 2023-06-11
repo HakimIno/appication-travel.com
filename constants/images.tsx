@@ -13,6 +13,7 @@ const reviewsLoad = require("../assets/images/reviewsLoad.json")
 const loadingData = require("../assets/images/Frame4.json")
 const no_found_duck = require("../assets/images/Comp_1.json")
 const link_animation = require("../assets/like_animation.json")
+const cancelLoad = require("../assets/Comp.json")
 
 export default {
     banner,
@@ -29,5 +30,6 @@ export default {
     reviewsLoad,
     loadingData,
     no_found_duck,
-    link_animation
+    link_animation,
+    cancelLoad
 }

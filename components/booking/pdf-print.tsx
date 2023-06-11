@@ -24,6 +24,10 @@ interface Props {
   date: any;
   adults: any;
   children: any;
+  hotelsName: any
+  singleBad: any
+  doubleBed: any
+  threeBeds: any
 }
 
 const PdfPrint = ({
@@ -35,7 +39,11 @@ const PdfPrint = ({
   tirpname,
   date,
   adults,
-  children
+  children,
+  hotelsName,
+  singleBad,
+  doubleBed,
+  threeBeds
 }: Props) => {
   const [selectedPrinter, setSelectedPrinter] = useState<
     undefined | Print.Printer
@@ -43,7 +51,7 @@ const PdfPrint = ({
 
   let priceWithoutComma = price.replace(",", "");
 
-  const payload = generatePayload("0638288463", {
+  const payload = generatePayload("1101801137151", {
     amount: Number(priceWithoutComma),
   });
 
@@ -102,15 +110,12 @@ const PdfPrint = ({
         td:nth-child(2) {
           width: 30%;
           text-align: center;
-          
           font-weight: bold;
         }
         footer {
           position: fixed;
           bottom: 0;
           right: 0;
-         
-          
         }
       </style>
       </head>
@@ -122,7 +127,7 @@ const PdfPrint = ({
       src="https://media.discordapp.net/attachments/1023477355160813693/1097894279625592923/Logo.png?width=468&height=468"
       style="width: 15vw;" />
 
-      <h3 style="">travel.com</h3>
+      <h3 style="">Aumanan Junket</h3>
       </div>
 
       <h5>วันที่จอง ${date}</h5>
@@ -134,8 +139,12 @@ const PdfPrint = ({
       <h5>นามสกุล:  ${lastname}</h5>
       <h5>เบอร์โทรทัพท์:  ${phonnumber}</h5>
       <h5>อีเมล:  ${email}</h5>
-      <h5>ผู้ใหญ่:  ${adults} คน</h5>
-      <h5>เด็ก:  ${children} คน</h5>
+      <h5>${adults !== 0 ? `ผู้ใหญ่: ${adults} คน`  : ''}</h5>
+      <h5>${children !== 0 ? `เด็ก: ${children} คน`  : ''}</h5>
+      <h5>ที่พัก:  ${hotelsName} คน</h5>
+      <h5>${singleBad !== 0 ? `เตี่ยงเดี่ยว: ${singleBad} เตียง`  : ''}</h5>
+      <h5>${doubleBed !== 0 ? `เตี่ยงคู่: ${doubleBed} คู่`  : ''} </h5>
+      <h5>${threeBeds !== 0 ? `เตี่ยงสาม: ${threeBeds} เตียง`  : ''}</h5>
       </div>
       
      <div style="margin: 0px 30px 0px 30px;">
@@ -157,9 +166,11 @@ const PdfPrint = ({
           display: flex; 
           justify-content: center;}>
          
-         <div style={margin: 0px 30px 0px 30px;}>
-         <img src=${qrCodeUrl} alt="promptpay-qr" width="100" height="100">
-         <h6 style={font-size: 15px; text-align: center;}>สแกนเพื่อชำระเงิน</h6>
+         <div style={}>
+         <img src=${qrCodeUrl} alt="promptpay-qr" width="130" height="130">
+         
+         <h6 style={font-size: 20px; text-align: center; }>สแกนเพื่อชำระเงิน</h6>
+        
          
          </div>
          </div>

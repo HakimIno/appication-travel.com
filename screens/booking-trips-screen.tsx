@@ -1,5 +1,6 @@
 import {
   FlatList,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -26,6 +27,7 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import BottomSheetSelectDay from "../components/booking/bottomSheet-select-day";
 import { addDays, format, isAfter, parseISO, startOfToday } from "date-fns";
 import { numberWithCommas } from "../utils/utils";
+import BookingHotels from "../components/booking/booking-hotels";
 
 type BookingTripsScreenNavigationProp = NavigationProp<
   RootStackParamList,
@@ -35,7 +37,7 @@ type BookingTripsScreenNavigationProp = NavigationProp<
 const BookingTripScreen = () => {
   const navigation = useNavigation<BookingTripsScreenNavigationProp>();
   const route = useRoute<RouteProp<RootStackParamList, "BookingTrips">>();
-  const { title, price, tripsId, hotelsId, types, image, childrenPrice } = route.params;
+  const { title, price, tripsId, hotelsId, types, image, childrenPrice , hotelsName, singleBadPrice, doubleBedPrice, threeBedsPrice} = route.params;
 
   const details = ["ยกเลิกฟรี (ล่วงหน้า 24 ชั่วโมง)", "ยืนยัน"];
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -49,8 +51,13 @@ const BookingTripScreen = () => {
   const [date, setDate] = useState(isoDateString);
   const [adults, setAdults] = useState(0);
   const [children, setChildren] = useState(0);
+  const [personThree, setPersonThree] = useState(0);
   const [activeIndex, setActiveIndex] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [singleBed, setSingleBed] = useState(0);
+  const [doubleBed, setDoubleBed] = useState(0);
+  const [threeBeds, setThreeBeds] = useState(0);
 
   const days = format(new Date(date), "dd MMM");
 
@@ -80,15 +87,17 @@ const BookingTripScreen = () => {
     bottomSheetRef.current?.snapToIndex(1);
   };
 
-  const prices = numberWithCommas((parseFloat(price) * adults) + (parseFloat(childrenPrice) * children));
+  const hotelsPrice = (parseFloat(singleBadPrice) * singleBed) + (parseFloat(doubleBedPrice) * doubleBed) + (parseFloat(threeBedsPrice) * threeBeds)
+
+  const prices = numberWithCommas((parseFloat(price) * adults) + (parseFloat(childrenPrice) * children) + hotelsPrice)  ;
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* <Divider enabledSpacing={false} elevations={false} /> */}
       <View style={styles.subContainer}>
         <Text
           numberOfLines={2}
-          style={[styles.detailsBookingText, { fontSize: 13 }]}
+          style={[styles.detailsBookingText, { fontSize: Display.setWidth(3.8) }]}
         >
           {title}
         </Text>
@@ -216,10 +225,26 @@ const BookingTripScreen = () => {
           setAdults={setAdults}
           children={children}
           setChildren={setChildren}
+          setPersonThree={setPersonThree}
+          personThree={personThree}
           activeIndex={activeIndex}
           price={numberWithCommas(price)}
           childrenPrice={numberWithCommas(childrenPrice)}
         />
+
+        <BookingHotels
+          singleBed={singleBed}
+          setSingleBed={setSingleBed}
+          doubleBed={doubleBed}
+          setDoubleBed={setDoubleBed}
+          setThreeBeds={setThreeBeds}
+          threeBeds={threeBeds}
+          hotelsName={hotelsName}
+          singleBadPrice={singleBadPrice}
+          doubleBedPrice={doubleBedPrice}
+          threeBedsPrice={threeBedsPrice}
+        />
+
 
         <View
           style={{
@@ -232,7 +257,7 @@ const BookingTripScreen = () => {
                 color: "black",
                 fontSize: 13,
                 fontWeight: "bold",
-                marginVertical: 10,
+                marginVertical: Display.setHeight(1),
               }}
             >
               รวม {prices} ฿
@@ -242,11 +267,11 @@ const BookingTripScreen = () => {
             style={{
               alignItems: "center",
               backgroundColor: COLORS.primary,
-              paddingVertical: 6,
+              paddingVertical: Display.setWidth(2),
               borderRadius: SIZES.radius,
             }}
             onPress={() => {
-              if (adults !== 0 || (children !== 0 && activeIndex !== "")) {
+              if (adults !== 0 || (children !== 0 && activeIndex !== "") || singleBed !== 0 || doubleBed !== 0 || threeBeds !== 0) {
                 navigation.navigate("BookingInformation", {
                   tripsId: tripsId,
                   hotelsId: hotelsId,
@@ -256,6 +281,10 @@ const BookingTripScreen = () => {
                   adults: adults,
                   children: children,
                   bookingDate: activeIndex,
+                  singleBad: singleBed,
+                  doubleBed: doubleBed,
+                  threeBeds: threeBeds,
+                  hotelsName: hotelsName,
                   types: types
                 });
               }
@@ -271,7 +300,7 @@ const BookingTripScreen = () => {
               <Text
                 style={{
                   color: "white",
-                  fontSize: 13,
+                  fontSize: Display.setWidth(3.5),
                   fontFamily: "SukhumvitSet-Bold",
                 }}
               >
@@ -289,7 +318,7 @@ const BookingTripScreen = () => {
         setActiveIndex={setActiveIndex}
       />
       {loading && <LoadingBooking src={images.loadingData} />}
-    </View>
+    </ScrollView>
   );
 };
 
@@ -305,14 +334,14 @@ const styles = StyleSheet.create({
     marginTop: SPACING.l,
   },
   detailsBooking: {
-    paddingHorizontal: 4,
-    paddingVertical: 1,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
     borderRadius: 5,
     backgroundColor: "#eeeef1",
     alignSelf: "flex-start",
   },
   detailsBookingText: {
-    fontSize: 10,
+    fontSize: Display.setWidth(2.3),
     fontFamily: "SukhumvitSet-SemiBold",
   },
 });

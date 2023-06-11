@@ -3,6 +3,7 @@ import { TextInput, View, StyleSheet } from "react-native";
 import { Octicons, Ionicons } from "@expo/vector-icons";
 import { COLORS, SPACING } from "../../constants/theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Display from "../../utils/Display";
 
 interface Props {
   search: string
@@ -12,7 +13,7 @@ const SearchInput = ({ search, setSearch }: Props) => {
 
   const insets = useSafeAreaInsets();
   return (
-    <View style={[styles.container, { marginTop: insets.top }]}>
+    <View style={[styles.container, { marginTop: Display.setHeight(3) }]}>
       <View style={styles.inner}>
         <View style={styles.search} pointerEvents="none">
           <Ionicons name="search" size={22} color="black" />
@@ -34,7 +35,7 @@ const SearchInput = ({ search, setSearch }: Props) => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: SPACING.m,
-    paddingBottom: SPACING.m,
+    paddingBottom: SPACING.l,
   },
   inner: {
     flexDirection: "row",

@@ -5,7 +5,7 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
-    <string>travel-app</string>
+    <string>Aumanan Junket</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key>
@@ -39,8 +39,6 @@
     </array>
     <key>CFBundleVersion</key>
     <string>1</string>
-    <key>FacebookClientToken</key>
-    <string>33eb981e19a83e12a33302b7125c96f9</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>NSAppTransportSecurity</key>

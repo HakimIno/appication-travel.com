@@ -5,28 +5,52 @@ import { Octicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../types";
+import { useEffect, useState } from "react";
+import { fetchNotificationData } from "../../api/fecth.api";
+import { collection, doc, getDoc, getDocs, onSnapshot, query, where } from "firebase/firestore";
+import { auth, db } from "../../config/config";
 
 type CurrentScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   "Home"
 >;
 
+interface NotificationProps {
+  id: number;
+  title: string;
+  description: string;
+  date: string;
+  read: boolean;
+}
 
-const MainHeader = () => {
+
+const MainHeader = ({unreadCount}: any) => {
   const insets = useSafeAreaInsets();
 
   const navigation = useNavigation<CurrentScreenNavigationProp>();
 
+  const [isLoading, setIsLoading] = useState(true);
+
+
   return (
     <View style={[styles.container, { marginTop: insets.top }]}>
-      <View></View>
+
       <Text style={styles.title}>
         Aumanan<Text style={{ color: COLORS.yellow }}>•</Text>Juket
       </Text>
 
-      <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
+
+      <TouchableOpacity onPress={() => { navigation.navigate("Notification") }}>
         <Octicons name="bell" size={22} color="white" />
-        <View style={styles.notification}></View>
+        {unreadCount > 0 && (
+          <View style={styles.notification}>
+            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ fontSize: 9, color: COLORS.white, textAlign: 'center' }}>
+                {unreadCount}
+              </Text>
+            </View>
+          </View>
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -46,12 +70,13 @@ const styles = StyleSheet.create({
   },
   notification: {
     position: 'absolute',
-    right: -3,
-    top: -3,
-    backgroundColor: COLORS.red,
-    width: 10,
-    height: 10,
-    borderRadius: 32
+    right: -5,
+    top: -5,
+    backgroundColor: '#ff0050',
+    width: 15,
+    height: 15,
+    borderRadius: 32,
+
   }
 });
 

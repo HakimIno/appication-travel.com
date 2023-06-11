@@ -16,6 +16,7 @@ import Divider from '../components/shared/divider';
 import * as ImagePicker from 'expo-image-picker';
 import { updateImageProfile } from '../api/upload-image.api';
 import { FontAwesome } from '@expo/vector-icons';
+import { signOut } from '@firebase/auth';
 
 
 type NavigationProps = {
@@ -31,7 +32,7 @@ const SettingsScreen = ({ navigation }: NavigationProps) => {
 
 
     const handleLogout = () => {
-        auth.signOut().
+        signOut(auth).
             then(() => {
                 navigation.reset({
                     index: 0,
@@ -150,9 +151,7 @@ const SettingsScreen = ({ navigation }: NavigationProps) => {
 
     const data = [
         { title: "รายการที่บันทึกไว้", icon: "heart", routeName: 'Favorite' },
-        { title: "รีวิวทั้งหมด", icon: "rocket", routeName: '' },
         { title: "การแจ้งเตือน", icon: "bell", routeName: 'Notification' },
-        { title: "เกี่ยวกับ Aumanan Juket", icon: "question", routeName: 'About' },
     ]
 
     type IconName = "heart" | "question" | "rocket" | "bell"

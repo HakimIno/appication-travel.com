@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "travel-app",
+    "name": "Aumanan Junket",
     "slug": "travel-app",
     "version": "1.0.0",
     "splash":{
@@ -9,7 +9,6 @@
       "backgroundColor": "#ffffff"
     },
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "assetBundlePatterns": [
       "**/*"
@@ -29,8 +28,9 @@
       "bundleIdentifier": "com.kimsnow33.travelapp"
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/images/Logo.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.kimsnow33.travelapp"

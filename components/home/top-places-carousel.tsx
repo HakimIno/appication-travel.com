@@ -27,6 +27,7 @@ const CARD_HEIGHT = 200;
 const CARD_WIDTH_SPACING = CARD_WIDTH + SPACING.l;
 
 const TopPlacesCarousel = ({ list, navigation }: Props) => {
+
   return (
     <Carousel
       items={list}

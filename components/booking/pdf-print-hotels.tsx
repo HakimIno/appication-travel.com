@@ -43,7 +43,7 @@ const PdfPrintHotels = ({
 
     let priceWithoutComma = price.replace(",", "");
 
-    const payload = generatePayload("0638288463", {
+    const payload = generatePayload("1101801137151", {
         amount: Number(priceWithoutComma),
     });
 
@@ -120,7 +120,7 @@ const PdfPrintHotels = ({
         src="https://media.discordapp.net/attachments/1023477355160813693/1097894279625592923/Logo.png?width=468&height=468"
         style="width: 15vw;" />
   
-        <h3 style="">travel.com</h3>
+        <h3 style="">Aumanan Junket</h3>
         </div>
   
        
@@ -156,8 +156,8 @@ const PdfPrintHotels = ({
             display: flex; 
             justify-content: center;}>
            
-           <div style={margin: 0px 30px 0px 30px;}>
-           <img src=${qrCodeUrl} alt="promptpay-qr" width="100" height="100">
+           <div style={}>
+           <img src=${qrCodeUrl} alt="promptpay-qr" width="130" height="130">
            <h6 style={font-size: 15px; text-align: center;}>สแกนเพื่อชำระเงิน</h6>
            
            </div>

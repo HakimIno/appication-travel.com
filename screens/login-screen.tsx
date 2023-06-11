@@ -1,4 +1,5 @@
 import {
+  Button,
   Image,
   ImageBackground,
   StatusBar,
@@ -10,16 +11,17 @@ import {
 
 import Display from "../utils/Display";
 import { COLORS, FONTS, SIZES, images } from "../constants";
-import { MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 
 import { A } from "@expo/html-elements";
-import * as Facebook from "expo-auth-session/providers/facebook";
+import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 
 
 import {
   signInWithCredential,
   FacebookAuthProvider,
+  GoogleAuthProvider,
 } from "@firebase/auth";
 
 import { auth, db } from "../config/config";
@@ -33,11 +35,16 @@ type Props = {
   navigation: any;
 };
 
+interface TokenResponse {
+  authentication: {
+    accessToken: string;
+  } | null;
+}
+
+
 WebBrowser.maybeCompleteAuthSession();
 
 export const LoginScreen = ({ navigation }: Props) => {
-  /* const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((token) => {
       if (token) {
@@ -50,103 +57,81 @@ export const LoginScreen = ({ navigation }: Props) => {
     return unsubscribe;
   }, []);
 
-  const signInFacebook = async () => {
-    try {
+  const [token, setToken] = useState("");
+  const [userInfo, setUserInfo] = useState(null);
 
-      const appId = '744636280696889';
-     
-
-      await Facebook.initializeAsync({
-        appId: appId || undefined
-      });
-
-      const result = await Facebook.logInWithReadPermissionsAsync({
-        permissions: ["public_profile"],
-      });
-
-      if (result.type === "success") {
-        console.log(result.token)
-        const credential = FacebookAuthProvider.credential(result.token);
-        const userCredentials = await signInWithCredential(auth, credential);
-        userCredentials.user?.getIdToken();
-        console.log("Login success!!");
-      } else {
-        console.log("Facebook login error:", result);
-      }
-    } catch (error) {
-      console.log("Error during Facebook login:", error);
-    }
-  }; */
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((token) => {
-      if (token) {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "Root", }],
-        });
-      }
-    });
-    return unsubscribe;
-  }, []);
-
-  const [request, response, promptAsync] = Facebook.useAuthRequest({
-    clientId: "744636280696889",
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    androidClientId: '704958930040-7hli9g0t14pv53m6ne4hieolfpe1r846.apps.googleusercontent.com',
+    webClientId: '704958930040-cv6ql1g3h3qhqaq0db89ql2kivhaos42.apps.googleusercontent.com',
   });
 
-
   useEffect(() => {
-    console.log(response)
-    if (response && response.type === "success" && response.authentication) {
-      (async () => {
-        const accessToken = response.authentication?.accessToken;
-        console.log(accessToken)
-        if (accessToken) {
-          const userInfoResponse = await fetch(
-            `https://graph.facebook.com/me?access_token=${accessToken}&fields=id,name,picture.type(large)`
-          );
-          const userInfo = await userInfoResponse.json();
+    handleEffect();
+  }, [response, token]);
 
-          const credential = FacebookAuthProvider.credential(accessToken);
-          await signInWithCredential(auth, credential).then(async (userCredential) => {
-            const users = userCredential.user;
-
-            const userDocRef = doc(db, "users", `${users?.uid}`);
-
-            const docSnapshot = await getDoc(userDocRef);
-
-            if (docSnapshot.exists()) {
-              console.log("User data already exists in Firestore.");
-            } else {
-              const profileUrl = userInfo.url || ""; // Handle undefined value
-              const nameArray = userInfo.name.split(" ") || "";
-              setDoc(userDocRef, {
-                profileUrl: profileUrl,
-                firstName: nameArray[0],
-                lastName: nameArray[1],
-                phoneNumber: "",
-                email: "",
-              })
-                .then(() => {
-                  console.log("User data stored successfully!");
-                })
-                .catch((error) => {
-                  console.error("Error storing user data: ", error);
-                });
-            }
-          });
-
-          console.log('Login Success!!');
+  async function handleEffect() {
+    
+      if (response && response.type === "success") {
+        // setToken(response.authentication.accessToken);
+        if (response.authentication !== null) {
+          getUserInfo(response.authentication.accessToken);
         }
-      })();
-    }
-  }, [response]);
-  
-  const handlePressAsync = async () => {
-    const result = await promptAsync();
-    console.log(result)
+      }
+    
+  }
+
+  const getLocalUser = async () => {
+    const data = await AsyncStorage.getItem("@user");
+    if (!data) return null;
+    return JSON.parse(data);
   };
 
+  const getUserInfo = async (token: string) => {
+    if (!token) return;
+    try {
+      const response = await fetch(
+        "https://www.googleapis.com/userinfo/v2/me",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const user = await response.json();
+      await AsyncStorage.setItem("@user", JSON.stringify(user));
+
+      const credential = GoogleAuthProvider.credential(null ,token);
+
+      await signInWithCredential(auth, credential).then(async (userCredential) => {
+        const users = userCredential.user;
+
+        const userDocRef = doc(db, "users", `${users?.uid}`);
+
+        const docSnapshot = await getDoc(userDocRef);
+
+        if (docSnapshot.exists()) {
+          console.log("User data already exists in Firestore.");
+        } else {
+
+          setDoc(userDocRef, {
+            profileUrl: user?.picture,
+            firstName: user?.given_name,
+            lastName: user?.family_name,
+            phoneNumber: "",
+            email: user?.email,
+          })
+            .then(() => {
+              console.log("User data stored successfully!");
+            })
+            .catch((error) => {
+              console.error("Error storing user data: ", error);
+            });
+        }
+      })
+
+    } catch (error) {
+      console.log(`Login filed ${error}`)
+    }
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>
@@ -156,19 +141,24 @@ export const LoginScreen = ({ navigation }: Props) => {
         translucent />
       <View style={styles.headerClose}></View>
       <View style={styles.headerContainer}>
-        <Image source={images.LogoApp} style={{ width: 250, height: 150 }} />
+        <Image source={images.LogoApp} style={{ width: Display.setWidth(50), height: Display.setHeight(35) }} />
         <Text style={styles.headerSubtitleTitle}>
           เข้าสู่ระบบเพื่อจองแพ็คเกจทัวร์
         </Text>
 
         <View style={styles.loginContainer}>
-          {/* Facebook Login */}
+          {/* Google Login */}
+
           <TouchableOpacity
-            style={[styles.facebookContainer, styles.shadowProp]}
-            onPress={handlePressAsync}
+            style={[styles.googleContainer, styles.shadowProp]}
+            disabled={!request}
+            onPress={() => {
+              promptAsync();
+            }}
           >
-            <MaterialIcons name="facebook" size={27} color={COLORS.white} />
-            <Text style={styles.facebookText}>เข้าระบบผ่าน Facebook</Text>
+            <FontAwesome name="google" size={25} color={COLORS.black} />
+
+            <Text style={styles.googleText}>เข้าระบบผ่าน Google</Text>
           </TouchableOpacity>
           <View style={{ marginVertical: 4 }} />
           {/* PhoneNumber Login */}
@@ -182,34 +172,8 @@ export const LoginScreen = ({ navigation }: Props) => {
             </Text>
           </TouchableOpacity>
           <View style={{ marginVertical: 15 }} />
-          <View style={styles.registerHeaderContainer}>
-            <View
-              style={{ flex: 1, height: 1, backgroundColor: COLORS.lightGray }}
-            />
-
-            <Text
-              style={{
-                width: 40,
-                textAlign: "center",
-                color: COLORS.black,
-                fontFamily: "SukhumvitSet-Bold",
-              }}
-            >
-              หรือ
-            </Text>
-            <View
-              style={{ flex: 1, height: 1, backgroundColor: COLORS.lightGray }}
-            />
-          </View>
-          <View style={{ marginVertical: 15 }} />
           {/* register  */}
-          <TouchableOpacity
-            style={[styles.registerContainer, styles.shadowProp]}
-            onPress={() => navigation.navigate("EmailLogin")}
-          >
-
-            <Text style={styles.facebookText}>เข้าสู่ระบบ</Text>
-          </TouchableOpacity>
+          
         </View>
       </View>
       <View
@@ -251,7 +215,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   headerSubtitleTitle: {
-    fontSize: SIZES.h4 - 2,
+    fontSize: Display.setWidth(3.5),
     color: COLORS.slate,
     fontFamily: "SukhumvitSet-SemiBold",
   },

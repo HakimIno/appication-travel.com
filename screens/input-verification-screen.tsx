@@ -69,7 +69,6 @@ const InputVerificationScreen: React.FC<Props> = ({ route, navigation }) => {
       await signInWithCredential(auth, credential).then(async (userCredential) => {
         const users = userCredential.user;
         const userDocRef = doc(db, "users", `${users?.uid}`);
-
         const docSnapshot = await getDoc(userDocRef);
 
         if (docSnapshot.exists()) {

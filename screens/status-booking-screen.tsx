@@ -1,4 +1,4 @@
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, Image, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { COLORS, images } from '../constants'
 import { SIZES, SPACING } from '../constants/theme'
@@ -15,7 +15,10 @@ import LottieView from "lottie-react-native";
 import { updateImageToFirestore } from '../api/upload-image.api';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { DocumentData, addDoc, collection, doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import Display from '../utils/Display';
+import { TextInput } from 'react-native';
+import moment from 'moment';
 
 interface Orders {
   id: string,
@@ -35,6 +38,7 @@ interface Orders {
   adults: number,
   children: number,
   checkInDate: string,
+  note: string;
   checkOutDate: string,
   selectRoom: string,
   reviewExists: boolean,
@@ -58,7 +62,7 @@ const StatusBookingScreen = () => {
   const [ordersInSuccess, setOrdersInSuccess] = useState<Orders[]>([])
   const [ordersInFailed, setOrdersFailed] = useState<Orders[]>([])
   const [isRefreshing, setIsRefreshing] = useState(false);
-
+  const [userData, setUserData] = useState<DocumentData | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -66,6 +70,23 @@ const StatusBookingScreen = () => {
     return () => unsubscribe();
   }, []);
 
+  const currentUser = auth.currentUser;
+  const userId = currentUser?.uid;
+
+  useEffect(() => {
+    const userDocRef = doc(db, 'users', String(userId));
+
+    const unsubscribe = onSnapshot(userDocRef, (documentSnapshot) => {
+      if (documentSnapshot.exists()) {
+        const userData = documentSnapshot.data();
+        setUserData(userData);
+      } else {
+        console.log('User document does not exist');
+      }
+    });
+
+    return () => unsubscribe();
+  }, [userId]);
 
   const fetchData = async () => {
     try {
@@ -92,6 +113,11 @@ const StatusBookingScreen = () => {
 
   const StatusCard = ({ item }: { item: Orders }) => {
 
+    const [cancelNote, setCancelNote] = useState('')
+    const [modalVisible, setModalVisible] = useState(false);
+    const [orderID, setOrderID] = useState(null)
+    const [isLoading, setIsLoading] = useState(false)
+
     const pickImage = async (orderId: string) => {
 
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -106,6 +132,39 @@ const StatusBookingScreen = () => {
       }
 
     };
+
+
+    const sendCancelOrder = async () => {
+      try {
+        const orderRef = doc(db, 'orders', String(orderID));
+
+        await updateDoc(orderRef, { note: cancelNote });
+
+        const date = new Date()
+        const formattedDate = moment(date).format('DD/MMM/YY');
+
+        const notification = {
+          userName: `${userData?.firstName} ${userData?.lastName}`,
+          imageUser: userData?.profileUrl,
+          description: cancelNote,
+          date: formattedDate
+        }
+
+        await addDoc(collection(db, "notification"), notification)
+        
+        console.log('Trip removed successfully!');
+        window.location.reload(); 
+      } catch (error) {
+        console.log('Error removing trip:', error);
+      }
+    };
+
+
+
+    const handelPress = (id: any) => {
+      setOrderID(id)
+      setModalVisible(true);
+    }
 
 
     return (
@@ -143,18 +202,37 @@ const StatusBookingScreen = () => {
           </View>
 
           <View style={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-end', }}>
-            <Text numberOfLines={2} style={[styles.fontText, { fontSize: 12, color: COLORS.primary, }]}>฿{item.price}</Text>
+
+
+            {
+              item.note === "" ? (<Text numberOfLines={2} style={[styles.fontText, { fontSize: Display.setWidth(3), color: COLORS.primary, }]}>฿{item.price}</Text>) : ""
+            }
 
             {item.status !== "Failed" ? (
               <>
                 {item.sleep_checkout === "" ? (
                   <>
-                    <View style={{ alignItems: 'flex-end' }}>
-                      <Text style={[styles.fontText, { fontSize: 10, color: COLORS.slate, }]}>ส่งสลีป</Text>
-                      <TouchableOpacity style={styles.addPhoto} onPress={() => pickImage(item.id)}>
-                        <MaterialIcons name="add-photo-alternate" size={20} color={COLORS.primary} />
-                      </TouchableOpacity>
-                    </View>
+                    {item.note === "" ? (
+                      <View style={{ alignItems: 'flex-end' }}>
+                        <Text style={[styles.fontText, { fontSize: 9, color: COLORS.slate, }]}>ส่งสลีป</Text>
+                        <TouchableOpacity style={styles.addPhoto} onPress={() => pickImage(item.id)}>
+                          <MaterialIcons name="add-photo-alternate" size={20} color={COLORS.primary} />
+                        </TouchableOpacity>
+                      </View>
+                    ) : (
+                      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <LottieView
+                          style={{ height: Display.setWidth(13) }}
+                          source={images.no_found_duck}
+                          autoPlay
+                          loop
+                        />
+
+                        <Text style={[{ fontSize: Display.setWidth(2.5), color: COLORS.lightGray1, fontFamily: "SukhumvitSet-SemiBold", }]}>รอยกเลิก...</Text>
+                      </View>
+                    )}
+
+
                   </>
                 ) : (
                   <>
@@ -213,12 +291,107 @@ const StatusBookingScreen = () => {
               </View>
             )}
 
+            {item.note === "" && item.status === "InProgress" && (
+              <TouchableOpacity
+                style={{
+                  backgroundColor: '#fef2f2',
+                  paddingHorizontal: Display.setWidth(1.5),
+                  borderRadius: 5,
+                  marginTop: 5
+                }}
+                onPress={() => handelPress(item.id)}
+              >
+                <Text
+                  numberOfLines={2}
+                  style={[styles.fontText, {
+                    fontSize: Display.setWidth(2.3),
+                    color: COLORS.red,
+                  }]}
+                >
+                  ยกเลิก
+                </Text>
+              </TouchableOpacity>
+            )}
+
+
+            <Modal
+              animationType="none"
+              visible={modalVisible}
+              onRequestClose={() => setModalVisible(false)}
+            >
+              <View style={{ marginHorizontal: SPACING.l, marginVertical: SPACING.s }}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      fontFamily: "SukhumvitSet-Bold",
+                      textAlign: "center",
+                    }}
+                  >
+                    คำขอยกเลิก
+                  </Text>
+                  <TouchableOpacity onPress={() => setModalVisible(false)}>
+                    <MaterialIcons name="close" size={22} color="black" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={{ padding: Display.setWidth(5) }}>
+
+                <View
+                  style={{
+                    backgroundColor: COLORS.white,
+                    borderColor: COLORS.gray,
+                    borderWidth: 1,
+                    borderStyle: 'dashed',
+                    padding: 10,
+                    borderRadius: SIZES.radius,
+                    marginVertical: SPACING.s
+                  }}>
+                  <TextInput
+                    placeholder='เหตุผลที่ยกเลิก'
+                    style={[styles.textFont, { fontSize: 12, height: 100, textAlignVertical: 'top', }]}
+                    maxLength={256}
+                    value={cancelNote}
+                    onChangeText={(e) => setCancelNote(e)}
+                    multiline
+                    keyboardType="default"
+                  />
+                </View>
+
+
+
+                <TouchableOpacity onPress={() => { sendCancelOrder(); setModalVisible(false) }} style={{
+                  paddingVertical: SPACING.s,
+                  backgroundColor: COLORS.primary,
+                  marginVertical: SPACING.l,
+                  borderRadius: SIZES.radius,
+                  alignItems: "center",
+                }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontFamily: "SukhumvitSet-Bold",
+                      color: COLORS.white,
+                    }}
+                  >ส่งคำขอยกเลิก</Text>
+                </TouchableOpacity>
+              </View>
+            </Modal>
+
+
+
+
+
           </View>
+
+
         </View>
         <Divider enabledSpacing={false} />
       </>
     )
   }
+
   const Screen1 = () => (
     <View style={styles.screenContainer}>
       <FlatList
@@ -335,7 +508,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
   },
   fontText: {
-    fontFamily: "SukhumvitSet-SemiBold",
+    fontFamily: "SukhumvitSet-Bold",
   },
   fontTextBold: {
     fontFamily: "SukhumvitSet-Bold",
@@ -355,5 +528,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: SIZES.radius - 5
-  }
+  },
+  textFont: {
+    fontSize: 14,
+    fontFamily: "SukhumvitSet-SemiBold",
+  },
+
 })

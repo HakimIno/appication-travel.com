@@ -77,7 +77,7 @@ const EmailLoginScreen = () => {
 
       <View style={{}}>
         <Text style={[styles.textTitle, { textAlign: "center" }]}>
-          เข้าสู่ระบบด้วย Email
+          เข้าสู่ระบบ
         </Text>
 
         <View style={[styles.containerInput, { alignItems: "center" }]}>
@@ -85,7 +85,7 @@ const EmailLoginScreen = () => {
             style={[styles.EmailInputStyle]}
             value={email}
             keyboardType="email-address"
-            placeholder="Email"
+            placeholder="Username"
             onChangeText={setEmail}
           />
           {email && (

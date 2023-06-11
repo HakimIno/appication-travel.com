@@ -10,8 +10,8 @@ const CategoryHeader = () => {
   const scrollAnimated = useRef(new Animated.Value(0)).current;
 
   const categoryData = [
-    { name: "ทัวร์", icon: icons.tripsIcon , type: "ทัวร์"},
-    { name: "โรงแรม", icon: icons.hotelIcon , type: "โรงแรม"},
+    { name: "ทัวร์", icon: "https://img.icons8.com/color/240/sunbathe.png" , type: "ทัวร์"},
+    { name: "โรงแรม", icon: "https://img.icons8.com/color/240/downtown.png" , type: "โรงแรม"},
     
   ];
   return (

@@ -317,3 +317,65 @@ export const fetchFavoritesHotels = async () => {
         console.log('Error getting users data:', error);
     }
 };
+
+
+export const fetchRecommendedTrips = async () => {
+    try {
+        const tripsCollectionRef = collection(db, 'trips');
+        const querySnapshot = await getDocs(tripsCollectionRef);
+
+        const reviewsRef = collection(db, 'reviews');
+        
+
+        const trips = querySnapshot.docs.map(async (doc) => {
+            const q = query(reviewsRef, where('tripsId', '==', doc.id));
+            const reviewsQuerySnapshot = await getDocs(q);
+            const reviewsData = reviewsQuerySnapshot.docs.map((reviewDoc) => ({
+                id: reviewDoc.id,
+                ...reviewDoc.data(),
+            }));
+
+            return {
+                id: doc.id,
+                tripsId: doc.id,
+                ...doc.data(),
+                reviews: reviewsData
+            };
+        });
+
+        const tripsWithReviews = await Promise.all(trips);
+
+        const ordersCollectionRef = collection(db, 'orders');
+        const querySnapshotOrder = await getDocs(ordersCollectionRef);
+
+        // Count the number of orders for each trip
+        const tripOrdersCount: { [key: string]: number } = {};
+        querySnapshotOrder.forEach((doc) => {
+            const tripId = doc.data().tripsId;
+            tripOrdersCount[tripId] = (tripOrdersCount[tripId] || 0) + 1;
+        });
+
+        const sortedTrips = tripsWithReviews.sort((a, b) => {
+            const ordersA = tripOrdersCount[a.id] || 0;
+            const ordersB = tripOrdersCount[b.id] || 0;
+
+            if (ordersA > ordersB) {
+                return -1;
+            } else if (ordersA < ordersB) {
+                return 1;
+            } else {
+
+                return a.id.localeCompare(b.id);
+            }
+        })
+
+        const recommendedTrips = sortedTrips.slice(0, 5);
+
+
+        return recommendedTrips;
+
+    } catch (error) {
+        console.log('Error getting trips data:', error);
+        return [];
+    }
+};

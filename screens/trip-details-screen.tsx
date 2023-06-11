@@ -46,7 +46,6 @@ const TripDetailsScreen = () => {
   const [favoritesData, setFavoritesData] = useState<Favorites[]>([])
 
 
-
   useEffect(() => {
     fetchData();
     const unsubscribe = onSnapshot(collection(db, 'favorites'), fetchData);

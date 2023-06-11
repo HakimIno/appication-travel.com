@@ -5,6 +5,7 @@ import { COLORS, SPACING } from "../../constants/theme";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../types";
+import Display from "../../utils/Display";
 
 type ItemProps = { name: string; icon: any; type: string };
 
@@ -25,9 +26,10 @@ const CategoryCard = ({ name, icon, type }: ItemProps) => {
       <Text
         style={{
           textAlign: "center",
-          fontSize: 11,
-          fontFamily: "SukhumvitSet-SemiBold",
+          fontSize: Display.setWidth(2.7),
+          fontFamily: "SukhumvitSet-Bold",
           marginTop: 3,
+          
         }}
       >
         {name}

@@ -73,6 +73,12 @@ const TripDetailsCard = ({ trip }: Props) => {
       [0, 10],
       Extrapolation.CLAMP
     ),
+    fontSize: interpolate(
+      animatedIndex.value,
+      [0, 0.08],
+      [SIZES.h4, SIZES.h3],
+      Extrapolation.CLAMP
+    ),
   }));
 
   const locationStyle = useAnimatedStyle(() => ({
@@ -84,7 +90,7 @@ const TripDetailsCard = ({ trip }: Props) => {
     fontSize: interpolate(
       animatedIndex.value,
       [0, 0.08],
-      [12, 13],
+      [SIZES.h4, SIZES.h3],
       Extrapolation.CLAMP
     ),
   }));
@@ -141,7 +147,7 @@ const TripDetailsCard = ({ trip }: Props) => {
     paddingVertical: interpolate(
       animatedIndex.value,
       [0, 0.08],
-      [0, 5],
+      [0, 10],
       Extrapolation.CLAMP
     ),
   }));
@@ -196,19 +202,20 @@ const TripDetailsCard = ({ trip }: Props) => {
             <SectionHeader
               title="สรุปการเดินทาง"
               buttonTitle=""
-              onPress={() => {}}
+              onPress={() => { }}
             />
-
+            <View style={{ marginVertical: 5 }}></View>
             <View style={styles.containerSummary}>
               <View style={styles.containerCalendar}>
-                <Octicons name="calendar" size={20} color="black" />
+                <Octicons name="calendar" size={SIZES.body2 - 5} color="black" />
                 <Text style={styles.calendarText}>{trip.tripsDay}</Text>
               </View>
-              <View></View>
+
             </View>
 
             <View style={styles.summary}>
               <Text style={styles.summaryText}>{trip.description}</Text>
+
               <View style={{ width: Display.setWidth(75) }}>
                 {trip.detailsTripsDay &&
                   trip.detailsTripsDay.length > 0 &&
@@ -216,35 +223,35 @@ const TripDetailsCard = ({ trip }: Props) => {
                     { length: trip.detailsTripsDay.length },
                     (_, i) => i + 1
                   )),
-                  numbers.map((num) => (
-                    <View style={{ flexDirection: "row" }} key={num}>
-                      <Text
-                        style={[styles.summaryText, { color: COLORS.primary }]}
-                      >
-                        <MaterialCommunityIcons
-                          name="airplane"
-                          size={14}
-                          color={COLORS.primary}
-                        />
-                        Day{num}:
-                      </Text>
-                      <View style={{ marginHorizontal: 3 }}>
-                        <Text style={styles.summaryText} numberOfLines={2}>
-                          {trip.detailsTripsDay[num - 1]}
+                    numbers.map((num) => (
+                      <View style={{ flexDirection: "row" }} key={num}>
+                        <Text
+                          style={[styles.summaryText, { color: COLORS.primary }]}
+                        >
+                          <MaterialCommunityIcons
+                            name="airplane"
+                            size={14}
+                            color={COLORS.primary}
+                          />
+                          Day{num}:
                         </Text>
+                        <View style={{ marginHorizontal: 3 }}>
+                          <Text style={styles.summaryText} numberOfLines={2}>
+                            {trip.detailsTripsDay[num - 1]}
+                          </Text>
+                        </View>
                       </View>
-                    </View>
-                  )))}
+                    )))}
               </View>
             </View>
 
             <SectionHeader
               title={`รีวิว (${trip.reviews.length})`}
               containerStyle={styles.sectionHeader}
-              titleStyle={styles.sectionTitle}
-              onPress={() => {}}
+              onPress={() => { }}
               buttonTitle=""
             />
+            <View style={{ marginVertical: Display.setHeight(0.5) }} />
             <RatingOverall
               rating={Number(trip.rating)}
               containerStyle={styles.rating}
@@ -264,12 +271,12 @@ const TripDetailsCard = ({ trip }: Props) => {
                 </TouchableOpacity>
               </TouchableWithoutFeedback>
             ) : null}
-            <View style={{ marginVertical: 15 }} />
+            <View style={{ marginVertical: Display.setHeight(2.5) }} />
           </Animated.View>
         </BottomSheetScrollView>
       </BottomSheet>
 
-      <Animated.View style={[{ backgroundColor: "white" }, bottomStyle]}>
+      <Animated.View style={[{ backgroundColor: COLORS.white }, bottomStyle]}>
         <TripBookingBottom
           title="จองตอนนี้"
           price={numberWithCommas(trip.price)}
@@ -280,6 +287,10 @@ const TripDetailsCard = ({ trip }: Props) => {
               price: trip.price,
               childrenPrice: trip.childrenPrice,
               image: trip.image,
+              hotelsName: trip.hotelsName,
+              singleBadPrice: trip.singleBadPrice,
+              doubleBedPrice: trip.doubleBedPrice,
+              threeBedsPrice: trip.threeBedsPrice,
               types: trip.type
             })
           }
@@ -332,7 +343,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   calendarText: {
-    fontSize: 13,
+    fontSize: SIZES.h4,
     fontFamily: "SukhumvitSet-SemiBold",
     marginHorizontal: Display.setWidth(1),
   },
@@ -341,7 +352,7 @@ const styles = StyleSheet.create({
     marginVertical: SPACING.s,
   },
   summaryText: {
-    fontSize: 12,
+    fontSize: Display.setWidth(3.4),
     color: COLORS.slate,
     fontFamily: "SukhumvitSet-Medium",
   },
@@ -351,13 +362,8 @@ const styles = StyleSheet.create({
   sectionHeader: {
     marginTop: SPACING.s,
   },
-  sectionTitle: {
-    fontSize: 13,
-    color: COLORS.gray,
-    fontFamily: "SukhumvitSet-Bold",
-  },
   allReviews: {
-    fontSize: 12,
+    fontSize: Display.setWidth(3.3),
     color: COLORS.primary,
     fontFamily: "SukhumvitSet-Bold",
   },

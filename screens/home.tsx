@@ -10,18 +10,17 @@ import {
   Alert,
   Text,
   TouchableOpacity,
+  AppState,
+  Button,
 
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 
 import { COLORS } from "../constants";
-
-
-
 import Display from "../utils/Display";
 
 import { AnimatedText } from "../components/home/AnimatedText";
-import { sample } from "lodash";
+import { map, sample } from "lodash";
 
 import MainHeader from "../components/home/main-header";
 import { SPACING } from "../constants/theme";
@@ -41,50 +40,17 @@ import "firebase/firestore";
 
 import { DocumentData, collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 
-import { db } from "../config/config";
+import { auth, db } from "../config/config";
 import PromotionCarousel from "../components/home/promotion-carousel";
-import * as Notifications from "expo-notifications";
-import * as Devices from "expo-device";
-import Constants from 'expo-constants'
-import { firebaseConfig } from "../config/config";
-import { fetchPublic_RelationsData, fetchTripsDataQuery } from "../api/fecth.api";
+
+import { fetchPublic_RelationsData, fetchRecommendedTrips, fetchTripsDataQuery } from "../api/fecth.api";
 import { TripsProps } from "../interface";
 import { RefreshControl } from "react-native";
-
 
 type CurrentScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   "Home"
 >;
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false
-  })
-})
-
-async function sendPushNotification(expoPushToken: string) {
-  console.log(expoPushToken)
-  const message = {
-    to: expoPushToken,
-    sound: 'default',
-    title: 'Original Title',
-    body: 'And here is the body!',
-    data: { someData: 'goes here' },
-  };
-
-  await fetch('https://exp.host/--/api/v2/push/send', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Accept-encoding': 'gzip, deflate',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(message),
-  });
-}
 
 interface Publics {
   id: number,
@@ -92,47 +58,23 @@ interface Publics {
 }
 
 const Home = () => {
+
   const navigation = useNavigation<CurrentScreenNavigationProp>();
 
   const [text, setText] = useState("สวัสดีครับ, ยินดีต้อนรับ");
   const [public_relations, setPublic_relations] = useState<Publics[]>([])
   const [tripsData, setTripsData] = useState<TripsProps[]>([]);
+  const [recommendedTrips, setRecommendedTrips] = useState<TripsProps[]>([])
 
   const trips = tripsData.slice(0, 4);
 
   const message = [
-    "สวัสวดีค่ะ ,“คุณอูฐ”",
-    "“ฉันจะเดินหนึ่งไมล์เพื่ออูฐ”",
+    `สวัสวดีค่ะ ,“คุณ”`,
+    "ยินดีต้อนรับเข้าสู่ Aumanan Juket",
     "เมื่อคุณใส่ใจพอที่จะส่งสิ่งที่ดีที่สุด ",
   ];
 
-  const [expoPushToken, setExpoPushToken] = useState('')
-  const [notification, setNotification] = useState<any>(false);
-  const notificationListener = useRef<Notifications.Subscription | undefined>();
-  const responseListener = useRef<Notifications.Subscription | undefined>();
   const [isRefreshing, setIsRefreshing] = useState(false);
-
-  useEffect(() => {
-    registerForPushNotificationsAsync().then((token: any) => setExpoPushToken(token));
-
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      setNotification(notification);
-    });
-
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      setNotification(response);
-    });
-
-    return () => {
-      if (notificationListener.current) {
-        Notifications.removeNotificationSubscription(notificationListener.current);
-      }
-      if (responseListener.current) {
-        Notifications.removeNotificationSubscription(responseListener.current);
-      }
-    };
-  }, []);
-
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -148,18 +90,45 @@ const Home = () => {
   }, []);
 
 
+  const checkUnreadNotificationCount = async (userId: string) => {
+    const notificationsRef = collection(db, 'notifys');
+    const querySnapshot = await getDocs(notificationsRef);
 
-  useEffect(() => {
-    fetchData()
-  }, []);
+    let unreadCount = 0;
+
+    for (const docSnap of querySnapshot.docs) {
+      const notificationId = docSnap.id;
+      const readerRef = doc(db, 'notifys', notificationId, 'readers', userId);
+
+      const readerDocSnap = await getDoc(readerRef);
+      if (!readerDocSnap.exists()) {
+        unreadCount++;
+      }
+    }
+
+    return unreadCount;
+  };
+
+  // ...
+
+  const [unreadCount, setUnreadCount] = useState(0);
 
 
   const fetchData = async () => {
     try {
       setIsRefreshing(true);
+
+      const currentUser = auth.currentUser;
+      const userId = currentUser?.uid;
       const public_relation = await fetchPublic_RelationsData();
       const queryTrips = await fetchTripsDataQuery()
 
+      const queryRecommendedTrips = await fetchRecommendedTrips()
+      const count = await checkUnreadNotificationCount(userId ? userId : '');
+
+      setUnreadCount(count);
+
+      setRecommendedTrips(queryRecommendedTrips as unknown as TripsProps[])
       setTripsData(queryTrips as unknown as TripsProps[]);
       setPublic_relations(public_relation as unknown as Publics[])
       setIsRefreshing(false);
@@ -167,6 +136,12 @@ const Home = () => {
       console.log('Error gettinu data:', error);
     }
   }
+
+  useEffect(() => {
+    fetchData();
+    
+  }, []);
+
 
   return (
     <View style={styles.container}>
@@ -189,13 +164,13 @@ const Home = () => {
             backgroundColor="transparent"
             barStyle="light-content"
           />
-          <MainHeader />
+          <MainHeader unreadCount={unreadCount} />
           <AnimatedText text={text} style={styles.animateTextStyle} />
         </ImageBackground>
 
         <CategoryHeader />
 
-        <View  style={{marginTop: SPACING.m}}/>
+        <View style={{ marginTop: SPACING.m }} />
         <SectionHeader
           title="โปรโมชั่น"
           buttonTitle=""
@@ -214,7 +189,7 @@ const Home = () => {
           }}
         />
 
-        {tripsData && <TopPlacesCarousel list={tripsData} navigation={navigation} />}
+        {recommendedTrips && <TopPlacesCarousel list={recommendedTrips} navigation={navigation} />}
         <SectionHeader
           title="ทัวร์ทั่วโลก"
           buttonTitle="ดูทั้งหมด"
@@ -256,33 +231,3 @@ const styles = StyleSheet.create({
 export default Home;
 
 
-async function registerForPushNotificationsAsync() {
-  let token
-
-  if (Devices.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync()
-    let finalStatus = existingStatus
-    if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync()
-      finalStatus = status
-    }
-
-    if (finalStatus !== 'granted') {
-      Alert.alert('Failed to get push token for push notification!')
-      return
-    }
-
-    token = (await Notifications.getDevicePushTokenAsync()).data
-  }
-
-  if (Platform.OS === 'android') {
-    Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C'
-    })
-  }
-
-  return token
-}

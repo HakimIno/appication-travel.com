@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { RootStackParamList } from "../types";
 import { COLORS } from "../constants";
@@ -17,23 +17,16 @@ import Divider from "../components/shared/divider";
 import CustomBackground from "../components/trip-details/TripDetailsCard/custom-background";
 import HeaderBooking from "../components/booking/header/header-booking";
 import PdfPrint from "../components/booking/pdf-print";
-import { addDoc, collection, doc, getDocs, setDoc } from "firebase/firestore";
+import { DocumentData, addDoc, collection, doc, getDocs, onSnapshot, setDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../config/config";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { calculateDuration, generateRandomID, numberWithCommas } from "../utils/utils";
 import PdfPrintHotels from "../components/booking/pdf-print-hotels";
 
-type BookingScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  "BookingInformation"
->;
-
 const BookingInformationScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, "BookingInformation">>();
-  const { title, price, bookingDate, adults, children, tripsId, hotelsId, types, image, checkInDate, checkOutDate, selectRoom } = route.params;
+  const { title, price, bookingDate, adults, children, tripsId, hotelsId, types, image, checkInDate, checkOutDate, selectRoom, hotelsName, singleBad, doubleBed, threeBeds } = route.params;
 
-
-  const navigation = useNavigation<BookingScreenNavigationProp>()
 
   const duration = calculateDuration(checkInDate, checkOutDate)
 
@@ -44,16 +37,6 @@ const BookingInformationScreen = () => {
   const [isFocusedPhoneNumber, setIsFocusedPhoneNumber] = useState(false);
   const [isFocusedEmail, setIsFocusedEmail] = useState(false);
 
-  //
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [email, setEmail] = useState("");
-
-  const [newFirstName, setNewFirstName] = useState("");
-  const [newLastName, setNewLastName] = useState("");
-  const [newPhoneNumber, setNewPhoneNumber] = useState("");
-  const [newEmail, setNewEmail] = useState("");
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["1%", "65%"], []);
@@ -62,23 +45,24 @@ const BookingInformationScreen = () => {
     bottomSheetRef.current?.snapToIndex(0);
   };
 
-  const handlePress = () => {
-    if (newFirstName === "") {
-      bottomSheetRef.current?.snapToIndex(1);
-    }
-  };
-
   const handleEdit = () => {
     bottomSheetRef.current?.snapToIndex(1);
   };
 
-  const handleButtonPress = () => {
-    setNewFirstName(firstName);
-    setNewLastName(lastName);
-    setNewPhoneNumber(phoneNumber);
-    setNewEmail(email);
-    bottomSheetRef.current?.snapToIndex(0);
-  };
+  const EditProfile = async () => {
+    try {
+
+        const usersCollectionRef = collection(db, 'users');
+        const userDocRef = doc(usersCollectionRef, userId);
+
+        await updateDoc(userDocRef, userData);
+        handleClose()
+
+        console.log('Profile updated successfully!');
+    } catch (error) {
+        console.error('Error updating profile:', error);
+    }
+};
 
   const renderHeader = () => (
     <>
@@ -114,17 +98,17 @@ const BookingInformationScreen = () => {
     const currentUser = auth.currentUser;
     const userId = currentUser?.uid;
 
-    if (tripsId) {
+    if (types === "PLACE") {
       const order_booking = {
         orderID: `LMF-${generateRandomID(8)}`,
         usersId: userId,
         tripsId: tripsId,
         title: title,
-        fistname: newFirstName,
-        lastname: newLastName,
+        fistname: userData?.firstName,
+        lastname: userData?.lastName,
         image: image,
-        phonnumber: newPhoneNumber,
-        email: newEmail,
+        phonnumber: userData?.phoneNumber,
+        email: userData?.email,
         sleep_checkout: "",
         date: bookingDate,
         price: price,
@@ -133,6 +117,7 @@ const BookingInformationScreen = () => {
         checkInDate: "",
         checkOutDate: "",
         selectRoom: "",
+        note: "",
         status: 'InProgress',
         type: types
       };
@@ -145,11 +130,11 @@ const BookingInformationScreen = () => {
         usersId: userId,
         hotelsId: hotelsId,
         title: title,
-        fistname: newFirstName,
-        lastname: newLastName,
+        fistname: userData?.firstName,
+        lastname: userData?.lastName,
         image: image,
-        phonnumber: newPhoneNumber,
-        email: newEmail,
+        phonnumber: userData?.phoneNumber,
+        email: userData?.email,
         sleep_checkout: "",
         checkInDate: checkInDate,
         checkOutDate: checkOutDate,
@@ -158,6 +143,7 @@ const BookingInformationScreen = () => {
         price: price,
         adults: "",
         children: "",
+        note: "",
         status: 'InProgress',
         type: types
       };
@@ -169,6 +155,46 @@ const BookingInformationScreen = () => {
     //navigation.navigate('ReviewInput', { tripsId: tripsId, title: title, hotelsId: hotelsId })
   }
 
+  const [userData, setUserData] = useState<DocumentData | null>(null);
+
+  const currentUser = auth.currentUser;
+  const userId = currentUser?.uid;
+
+
+  useEffect(() => {
+    const userDocRef = doc(db, 'users', String(userId));
+
+    const unsubscribe = onSnapshot(userDocRef, (documentSnapshot) => {
+      if (documentSnapshot.exists()) {
+        const userData = documentSnapshot.data();
+        setUserData(userData);
+      } else {
+        console.log('User document does not exist');
+      }
+    });
+
+    return () => unsubscribe();
+  }, [userId]);
+
+
+
+  const setFirstName = (text: string) => {
+    setUserData({ ...userData, firstName: text });
+  };
+
+  const setLastName = (text: string) => {
+    setUserData({ ...userData, lastName: text });
+  };
+
+  const setEmail = (text: string) => {
+    setUserData({ ...userData, email: text });
+  };
+
+  const setPhoneNumber = (text: string) => {
+    setUserData({ ...userData, phoneNumber: text });
+  };
+
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -178,15 +204,26 @@ const BookingInformationScreen = () => {
             <Text numberOfLines={2} style={styles.detailTextTitle}>
               {title}
             </Text>
-            {tripsId ? (
+            
+            {types === "PLACE" ?  (
               <>
+              <Text style={styles.detailTextSubTitle}>ที่พัก {hotelsName}</Text>
                 <Text style={styles.detailTextSubTitle}>{bookingDate}</Text>
-                {adults !== "" ? (
+                {adults !== 0 ? (
                   <Text style={styles.detailTextSubTitle}>ผู้ใหญ่ x {adults}</Text>
                 ) : null}
-                {children !== "" ? (
+                {children !== 0 ? (
                   <Text style={styles.detailTextSubTitle}>เด็ก x {children}</Text>
                 ) : null}
+                {singleBad !== 0 ? (
+                  <Text style={styles.detailTextSubTitle}>เตียงเดียว x {singleBad}</Text>
+                ) : ""}
+                 {doubleBed !== 0 ? (
+                  <Text style={styles.detailTextSubTitle}>เตียงคู่ x {doubleBed}</Text>
+                ) : ""}
+                 {threeBeds !== 0 ? (
+                  <Text style={styles.detailTextSubTitle}>เตียงสาม x {threeBeds}</Text>
+                ) : ""}
               </>
 
             ) : (
@@ -212,64 +249,56 @@ const BookingInformationScreen = () => {
             </Text>
 
             <View style={{ flexDirection: "row" }}>
-              <TouchableOpacity style={styles.btnAdd} onPress={handlePress}>
+
+
+              <TouchableOpacity
+                style={[
+                  styles.btnAdd,
+                  {
+                    marginLeft: SPACING.s,
+                    borderColor: COLORS.green,
+                    flexDirection: "row",
+                    alignItems: "center",
+                  },
+                ]}
+                onPress={handleEdit}
+              >
+                <Octicons name="pencil" size={14} color={COLORS.green} />
                 <Text
                   style={[
                     styles.detailTextTitle,
-                    { fontSize: 12, color: COLORS.primary },
+                    { fontSize: 12, color: COLORS.green, marginLeft: 5 },
                   ]}
                 >
-                  + เพิ่ม
+                  แก้ไข
                 </Text>
               </TouchableOpacity>
-              {newFirstName !== "" &&
-                newLastName !== "" &&
-                newPhoneNumber !== "" &&
-                newEmail ? (
-                <TouchableOpacity
-                  style={[
-                    styles.btnAdd,
-                    {
-                      marginLeft: SPACING.s,
-                      borderColor: COLORS.green,
-                      flexDirection: "row",
-                      alignItems: "center",
-                    },
-                  ]}
-                  onPress={handleEdit}
-                >
-                  <Octicons name="pencil" size={14} color={COLORS.green} />
-                  <Text
-                    style={[
-                      styles.detailTextTitle,
-                      { fontSize: 12, color: COLORS.green, marginLeft: 5 },
-                    ]}
-                  >
-                    แก้ไข
-                  </Text>
-                </TouchableOpacity>
-              ) : null}
+
               {isShowPDF && (
                 <>
-                  {tripsId ? (
+                  {types === 'PLACE' ? (
                     <PdfPrint
                       tirpname={title}
-                      fistname={newFirstName}
-                      lastname={newLastName}
-                      phonnumber={newPhoneNumber}
-                      email={newEmail}
+                      fistname={userData?.firstName}
+                      lastname={userData?.lastName}
+                      phonnumber={userData?.phoneNumber}
+                      email={userData?.email}
                       date={bookingDate}
                       price={numberWithCommas(price)}
                       adults={adults}
                       children={children}
+                      hotelsName={hotelsName}
+                      singleBad={singleBad}
+                      doubleBed={doubleBed}
+                      threeBeds={threeBeds}
                     />
                   ) : (
                     <PdfPrintHotels
                       hotelsName={title}
-                      fistname={newFirstName}
-                      lastname={newLastName}
-                      phonnumber={newPhoneNumber}
-                      email={newEmail}
+                      fistname={userData?.firstName}
+                      lastname={userData?.lastName}
+                      phonnumber={userData?.phoneNumber}
+                      email={userData?.email}
                       checkInDate={checkInDate}
                       checkOutDate={checkOutDate}
                       selectRoom={selectRoom}
@@ -304,19 +333,19 @@ const BookingInformationScreen = () => {
                 </View>
                 <View style={{ width: 150, right: 0 }}>
                   <Text style={[styles.detailTextInfo, { textAlign: "right" }]}>
-                    {newFirstName}
+                    {userData?.firstName}
                   </Text>
                   <Text style={[styles.detailTextInfo, { textAlign: "right" }]}>
-                    {newLastName}
+                    {userData?.lastName}
                   </Text>
                   <Text style={[styles.detailTextInfo, { textAlign: "right" }]}>
-                    {newPhoneNumber}
+                    {userData?.phoneNumber}
                   </Text>
                   <Text
                     style={[styles.detailTextInfo, { textAlign: "right" }]}
                     numberOfLines={1}
                   >
-                    {newEmail}
+                    {userData?.email}
                   </Text>
                 </View>
               </View>
@@ -357,7 +386,7 @@ const BookingInformationScreen = () => {
             alignItems: "center",
           }}
           onPress={() => {
-            if (!isShowPDF && newFirstName && newLastName && newPhoneNumber && newEmail) {
+            if (!isShowPDF && userData?.firstName && userData?.lastName && userData?.phoneNumber && userData?.email) {
               handleBooking();
 
               setIsShowPDF(true);
@@ -395,8 +424,8 @@ const BookingInformationScreen = () => {
             <TextInput
               style={styles.textInputStyle}
               placeholder="ex.มานะ"
-              value={firstName}
-              onChangeText={(e) => setFirstName(e)}
+              onChangeText={setFirstName}
+              value={userData?.firstName}
               placeholderTextColor="#9ca3af"
               onFocus={() => setIsFocusedName(true)}
               onBlur={() => setIsFocusedName(false)}
@@ -417,8 +446,8 @@ const BookingInformationScreen = () => {
               style={styles.textInputStyle}
               placeholder="ex.ใจดี"
               placeholderTextColor="#9ca3af"
-              value={lastName}
-              onChangeText={(e) => setLastName(e)}
+              onChangeText={setLastName}
+              value={userData?.lastName}
               onFocus={() => setIsFocusedLastname(true)}
               onBlur={() => setIsFocusedLastname(false)}
             />
@@ -438,8 +467,8 @@ const BookingInformationScreen = () => {
               style={styles.textInputStyle}
               placeholder="โปรดระบุ"
               placeholderTextColor="#9ca3af"
-              value={phoneNumber}
-              onChangeText={(e) => setPhoneNumber(e)}
+              onChangeText={setPhoneNumber}
+              value={userData?.phoneNumber}
               onFocus={() => setIsFocusedPhoneNumber(true)}
               onBlur={() => setIsFocusedPhoneNumber(false)}
             />
@@ -457,9 +486,9 @@ const BookingInformationScreen = () => {
             <TextInput
               style={styles.textInputStyle}
               placeholder="โปรดระบุ"
+              value={userData?.email}
               placeholderTextColor="#9ca3af"
-              value={email}
-              onChangeText={(e) => setEmail(e)}
+              onChangeText={setEmail}
               onFocus={() => setIsFocusedEmail(true)}
               onBlur={() => setIsFocusedEmail(false)}
             />
@@ -481,7 +510,7 @@ const BookingInformationScreen = () => {
               borderRadius: SIZES.radius,
               alignItems: "center",
             }}
-            onPress={handleButtonPress}
+            onPress={EditProfile}
           >
             <Text
               style={{

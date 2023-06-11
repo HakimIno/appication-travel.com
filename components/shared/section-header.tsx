@@ -1,5 +1,6 @@
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { COLORS, SPACING } from "../../constants/theme";
+import { COLORS, SIZES, SPACING } from "../../constants/theme";
+import Display from "../../utils/Display";
 
 interface Props {
   title: string;
@@ -45,11 +46,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginLeft: SPACING.l,
     marginRight: SPACING.m,
-   
 
   },
   title: {
-    fontSize: 13,
+    fontSize: Display.setWidth(3.5),
     fontFamily: 'SukhumvitSet-Bold'
   },
   allText: {

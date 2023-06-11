@@ -2,6 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { COLORS } from "../../constants";
 import { SIZES, SPACING } from "../../constants/theme";
+import Display from "../../utils/Display";
 
 type Props = {
   title: string;
@@ -47,7 +48,7 @@ export default TripBookingBottom;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.primary,
-    paddingVertical: 6,
+    paddingVertical: Display.setWidth(2),
     borderRadius: SIZES.radius,
     marginHorizontal: SPACING.m,
   },
