@@ -1,5 +1,5 @@
 
-# AOK 
+# APK 
 https://expo.dev/artifacts/eas/iVZ2CMH2xPPJnZJ8W9xktx.apk
 
 # travel.com
